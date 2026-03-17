@@ -25,16 +25,24 @@ public:
     
     ~LinkedList();
  
-    T GetFirst();
-    T GetLast();
+    T GetFirst() const;
+    T GetLast() const;
 
-    Node* GetNode(size_t index);
-    T Get(size_t index);
-    LinkedList<T>* GetSubList(size_t start_index, int end_index);
-    size_t GetLength(); 
+    Node* GetNode(size_t index) const;
+    T Get(size_t index) const;
+    LinkedList<T>* GetSubList(size_t start_index, size_t end_index) const;
+    size_t GetLength() const; 
 
     void Append(T temp);
     void Prepend(T temp);
+    void InsertAt(T temp, size_t index);
+
+    LinkedList<T>* Concat(const LinkedList<T> *list);
+
+    void Set(size_t index, T value);
+    void RemoveAt(size_t index);
+    bool IsEmpty() const;
+    void Clear();
 
 };
 
