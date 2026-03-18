@@ -1,11 +1,9 @@
 #include <LinkedList.h>
 #include <cstddef>
 #include <stdexcept> 
-
 template<class T>
-LinkedList<T>::LinkedList()
+LinkedList<T>::LinkedList() 
     : m_head(nullptr), m_tail(nullptr), m_size(0){}
-
 template<class T>
 LinkedList<T>::LinkedList (T* items, size_t count)
     : LinkedList()
@@ -73,10 +71,11 @@ T LinkedList<T>::GetLast() const {
     if(m_size == 0){
         throw std::out_of_range("Список пуст");
     }
-    return m_teil->data;
+    return m_tail->data;
+
 }
 template<class T>
-LinkedList<T>::Node* LinkedList<T>::GetNode(size_t index) const {
+typename LinkedList<T>::Node* LinkedList<T>::GetNode(size_t index) const {
     if (index >= m_size) {
         throw std::out_of_range("Индекс за списком");
     }
@@ -208,7 +207,7 @@ void LinkedList<T>::RemoveAt(size_t index){
     }
 
     if(to_delete->next){
-        to_delete->next->prew = to_delete->prev;
+        to_delete->next->prev = to_delete->prev;
     }else{
         m_tail = to_delete->prev;
     }

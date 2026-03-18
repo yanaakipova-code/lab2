@@ -5,12 +5,10 @@
 #include "DynamicArray.h"
 
 template<class T>
-class ArraySequence{
+class ArraySequence: public Sequence<T>{
 private:
     DynamicArray<T>* m_items;
 public:
-    Sequence<T>;
-    
     ArraySequence(T* temp, size_t count);
     ArraySequence();
     ArraySequence(const ArraySequence<T>& array_sequence);

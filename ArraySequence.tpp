@@ -8,12 +8,12 @@ ArraySequence<T>::ArraySequence(){
 
 template<class T>
 ArraySequence<T>::ArraySequence(T* temp, size_t count){
-    m_items = new DynamicArray<T>(items, count);
+    m_items = new DynamicArray<T>(temp, count);
 }
 
 template<class T>
 ArraySequence<T>::ArraySequence(const ArraySequence<T>& array_sequence){
-    m_items = new DynamicArray<T>(*other.m_items);
+    m_items = new DynamicArray<T>(*array_sequence.m_items);
 }
 
 template<class T>

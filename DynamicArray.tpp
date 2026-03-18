@@ -1,7 +1,6 @@
 #include <cstddef>
 #include <stdexcept> 
 #include "DynamicArray.h"
-
 template<class T>
 DynamicArray<T>::DynamicArray(T* items, size_t count){
     m_size = count;
@@ -70,10 +69,12 @@ void DynamicArray<T>::Resize(size_t new_size){
         return;
     }
     T* new_data = new T[new_size];
-    if (new_size < m_size){
-        size_t elements_to_copy = new_size
-    }else{
-        size_t elements_to_copy = m_size;
+    size_t elements_to_copy;
+
+    if (new_size < m_size) {
+        elements_to_copy = new_size;
+    } else {
+        elements_to_copy = m_size;
     }
 
     for (size_t i = 0; i < elements_to_copy; ++i) {

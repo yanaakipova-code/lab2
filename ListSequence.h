@@ -5,11 +5,10 @@
 #include "LinkedList.h"
 
 template<class T>
-class ListSequence{
+class ListSequence : public Sequence<T>{
 private:
     LinkedList<T>* m_list;
 public:
-    Sequence<T>;
 
     ListSequence(T* items, size_t count);
     ListSequence();
