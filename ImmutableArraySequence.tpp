@@ -1,4 +1,5 @@
 #include "ImmutableArraySequence.h"
+#include <memory>
 
 template<class T>
 ImmutableArraySequence<T>::ImmutableArraySequence(T* items, size_t count)
@@ -28,23 +29,23 @@ void ImmutableArraySequence<T>::InsertAt(T temp, size_t index) {
 }
 
 template<class T>
-ImmutableArraySequence<T>* ImmutableArraySequence<T>::WithAppend(T item) const {
+std::unique_ptr<ImmutableArraySequence<T>> ImmutableArraySequence<T>::WithAppend(T item) const {
     size_t old_size = this->GetLength();
     T* new_data = new T[old_size + 1];
 
     for(size_t i = 0; i < old_size; i++){
-        new_data = this->Get(i);
+        new_data[i] = this->Get(i);
     }
 
     new_data[old_size] = item; 
-    ImmutableArraySequence<T>* result = new ImmutableArraySequence<T>(new_data, old_size + 1); 
+    auto result = std::make_unique<ImmutableArraySequence<T>>(new_data, old_size + 1); 
 
-    delete [] new_data;
+    delete[] new_data;
     return result;
-}
+}   
 
 template<class T>
-ImmutableArraySequence<T>* ImmutableArraySequence<T>::WithInsertAt(T item, size_t index) const {
+std::unique_ptr<ImmutableArraySequence<T>> ImmutableArraySequence<T>::WithInsertAt(T item, size_t index) const {
     size_t old_size = this->GetLength();
     T* new_data = new T[old_size + 1]; 
 
@@ -58,19 +59,19 @@ ImmutableArraySequence<T>* ImmutableArraySequence<T>::WithInsertAt(T item, size_
         new_data[i + 1] = this->Get(i); 
     }
     
-    ImmutableArraySequence<T>* result = new ImmutableArraySequence<T>(new_data, old_size + 1);
+    auto result = std::make_unique<ImmutableArraySequence<T>>(new_data, old_size + 1);
     
     delete[] new_data;
     return result;
 }
 
 template<class T>
-ImmutableArraySequence<T>* ImmutableArraySequence<T>::WithPrepend(T item) const {
+std::unique_ptr<ImmutableArraySequence<T>> ImmutableArraySequence<T>::WithPrepend(T item) const {
     return WithInsertAt(item, 0);
 }
 
 template<class T>
-Sequence<T>* ImmutableArraySequence<T>::Concat(Sequence<T>* other) const {
+std::unique_ptr<Sequence<T>> ImmutableArraySequence<T>::Concat(Sequence<T>* other) const {
     size_t this_size = this->GetLength();
     size_t other_size = other->GetLength();
     size_t new_size = this_size + other_size;
@@ -85,10 +86,23 @@ Sequence<T>* ImmutableArraySequence<T>::Concat(Sequence<T>* other) const {
         new_data[this_size + i] = other->Get(i);
     }
     
-    ImmutableArraySequence<T>* result = 
-        new ImmutableArraySequence<T>(new_data, new_size);
+    auto result = std::make_unique<ImmutableArraySequence<T>>(new_data, new_size);
     
     delete[] new_data;
     
+    return result;
+}
+
+template<class T>
+std::unique_ptr<ArraySequence<T>> ImmutableArraySequence<T>::ToMutable() const {
+    size_t size = this->GetLength();
+    T* dataCopy = new T[size];
+    
+    for (size_t i = 0; i < size; i++) {
+        dataCopy[i] = this->Get(i);
+    }
+    
+    auto result = std::make_unique<ArraySequence<T>>(dataCopy, size);
+    delete[] dataCopy;
     return result;
 }
