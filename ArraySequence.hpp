@@ -3,6 +3,7 @@
 #include <cstddef>
 #include "Sequence.hpp"
 #include "DynamicArray.hpp"
+#include "Option.hpp"
 
 template<class T>
 class ArraySequence: public Sequence<T>{
@@ -30,6 +31,40 @@ public:
     Sequence<T>* Map(T (*func)(T)) override;
     Sequence<T>* Where(bool(*predicate)(T)) override;
     T Reduce(T (*func)(T, T), T initial) override;
+
+    Option<T> TryGetFirst(bool (*predicate)(T) = nullptr) const override;
+    Option<T> TryGetLast(bool (*predicate)(T) = nullptr) const override;
+
+
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
+
+    template<class T>
+    class Builder{
+    private:
+        DynamicArray<T>* m_items;
+    public:
+        Builder(): m_items(new DynamicArray<T>(0)){}
+        ~Builder(){}
+
+        Builder& add(const T& value){
+            size_t old_size = m_items->GetSize();
+            m_items->Resize(old_size+1);
+            m_items->Set(old_size, vaule);
+            return *this;
+        }
+
+        Builder& addSome(const T* values, size_t count){
+            for (size_t i = 0; i < count; i++){
+                add(values[i]);
+            }
+            return *this;
+        }
+
+        ArraySequence<T>* build() {
+            return new ArraySequence<T>(m_items);
+        }
+    };
 };
 
 #include "ArraySequence.tpp"
