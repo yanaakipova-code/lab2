@@ -8,6 +8,7 @@ private:
     size_t m_capacity;
     T* m_data;
 public:
+    DynamicArray(); 
     DynamicArray(T* items, size_t count);
     DynamicArray(size_t size);
     DynamicArray(DynamicArray<T> &dynamic_array);
@@ -18,6 +19,9 @@ public:
     size_t GetSize();
     void Set(size_t index, T value);
     void Resize(size_t new_size);
+
+    T& GetRef(size_t index);
+    const T& GetRef(size_t index) const;
 
     T* GetData();
     const T* GetData() const;

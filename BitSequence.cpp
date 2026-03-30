@@ -32,12 +32,15 @@ BitSequence::~BitSequence() {
 Bit BitSequence::GetFirst() const { 
     return m_bits->GetFirst(); 
 }
+
 Bit BitSequence::GetLast() const { 
     return m_bits->GetLast();
 }
+
 Bit BitSequence::Get(size_t index) const {
-     return m_bits->Get(index); 
+    return m_bits->Get(index); 
 }
+
 size_t BitSequence::GetLength() const { 
     return m_bits->GetLength(); 
 }
@@ -47,17 +50,39 @@ Sequence<Bit>* BitSequence::GetSubsequence(size_t start_index, size_t end_index)
 }
 
 void BitSequence::Append(Bit temp) {
-     m_bits->Append(temp); 
+    m_bits->Append(temp); 
 }
+
 void BitSequence::Prepend(Bit temp) {
-     m_bits->Prepend(temp); 
+    m_bits->Prepend(temp); 
 }
+
 void BitSequence::InsertAt(Bit temp, size_t index) {
-     m_bits->InsertAt(temp, index); 
+    m_bits->InsertAt(temp, index); 
 }
 
 Sequence<Bit>* BitSequence::Concat(Sequence<Bit>* other) const {
     return m_bits->Concat(other);
+}
+
+Sequence<Bit>* BitSequence::Map(Bit (*func)(Bit)) {
+    return m_bits->Map(func);
+}
+
+Sequence<Bit>* BitSequence::Where(bool (*predicate)(Bit)) {
+    return m_bits->Where(predicate);
+}
+
+Bit BitSequence::Reduce(Bit (*func)(Bit, Bit), Bit initial) {
+    return m_bits->Reduce(func, initial);
+}
+
+Option<Bit> BitSequence::TryGetFirst(bool (*predicate)(Bit)) const {
+    return m_bits->TryGetFirst(predicate);
+}
+
+Option<Bit> BitSequence::TryGetLast(bool (*predicate)(Bit)) const {
+    return m_bits->TryGetLast(predicate);
 }
 
 std::unique_ptr<BitSequence> BitSequence::And(const BitSequence& other) const {
@@ -65,13 +90,11 @@ std::unique_ptr<BitSequence> BitSequence::And(const BitSequence& other) const {
         throw std::invalid_argument("BitSequence::And: длины не совпадают");
     }
     
-    bool* resultBits = new bool[GetLength()];
+    auto result = std::make_unique<BitSequence>(GetLength());
     for (size_t i = 0; i < GetLength(); i++) {
-        resultBits[i] = Get(i).GetValue() & other.Get(i).GetValue();
+        bool bitValue = Get(i).GetValue() & other.Get(i).GetValue();
+        result->SetBit(i, bitValue);
     }
-    
-    auto result = std::make_unique<BitSequence>(resultBits, GetLength());
-    delete[] resultBits;
     return result;
 }
 
@@ -80,13 +103,11 @@ std::unique_ptr<BitSequence> BitSequence::Or(const BitSequence& other) const {
         throw std::invalid_argument("BitSequence::Or: длины не совпадают");
     }
     
-    bool* resultBits = new bool[GetLength()];
+    auto result = std::make_unique<BitSequence>(GetLength());
     for (size_t i = 0; i < GetLength(); i++) {
-        resultBits[i] = Get(i).GetValue() | other.Get(i).GetValue();
+        bool bitValue = Get(i).GetValue() | other.Get(i).GetValue();
+        result->SetBit(i, bitValue);
     }
-    
-    auto result = std::make_unique<BitSequence>(resultBits, GetLength());
-    delete[] resultBits;
     return result;
 }
 
@@ -95,24 +116,20 @@ std::unique_ptr<BitSequence> BitSequence::Xor(const BitSequence& other) const {
         throw std::invalid_argument("BitSequence::Xor: длины не совпадают");
     }
     
-    bool* resultBits = new bool[GetLength()];
+    auto result = std::make_unique<BitSequence>(GetLength());
     for (size_t i = 0; i < GetLength(); i++) {
-        resultBits[i] = Get(i).GetValue() ^ other.Get(i).GetValue();
+        bool bitValue = Get(i).GetValue() ^ other.Get(i).GetValue();
+        result->SetBit(i, bitValue);
     }
-    
-    auto result = std::make_unique<BitSequence>(resultBits, GetLength());
-    delete[] resultBits;
     return result;
 }
 
 std::unique_ptr<BitSequence> BitSequence::Not() const {
-    bool* resultBits = new bool[GetLength()];
+    auto result = std::make_unique<BitSequence>(GetLength());
     for (size_t i = 0; i < GetLength(); i++) {
-        resultBits[i] = !Get(i).GetValue();
+        bool bitValue = !Get(i).GetValue();
+        result->SetBit(i, bitValue);
     }
-    
-    auto result = std::make_unique<BitSequence>(resultBits, GetLength());
-    delete[] resultBits;
     return result;
 }
 
@@ -126,4 +143,48 @@ bool BitSequence::GetBit(size_t index) const {
 
 std::unique_ptr<ArraySequence<Bit>> BitSequence::ToMutable() const {
     return std::make_unique<ArraySequence<Bit>>(*m_bits);
+}
+
+BitSequence BitSequence::operator&(const BitSequence& other) const {
+    auto result = And(other);
+    return *result;
+}
+
+BitSequence BitSequence::operator|(const BitSequence& other) const {
+    auto result = Or(other);
+    return *result;
+}
+
+BitSequence BitSequence::operator^(const BitSequence& other) const {
+    auto result = Xor(other);
+    return *result;
+}
+
+BitSequence BitSequence::operator~() const {
+    auto result = Not();
+    return *result;
+}
+
+Bit& BitSequence::operator[](size_t index) {
+    return const_cast<Bit&>(m_bits->operator[](index));
+}
+
+const Bit& BitSequence::operator[](size_t index) const {
+    return m_bits->operator[](index);
+}
+
+Iterator<Bit> BitSequence::begin() {
+    return m_bits->begin();
+}
+
+Iterator<Bit> BitSequence::end() {
+    return m_bits->end();
+}
+
+ConstIterator<Bit> BitSequence::begin() const {
+    return ConstIterator<Bit>(&(*m_bits->begin()));
+}
+
+ConstIterator<Bit> BitSequence::end() const {
+    return ConstIterator<Bit>(&(*m_bits->end()));
 }

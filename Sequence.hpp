@@ -1,6 +1,8 @@
 #pragma once
 #include <stdexcept>
 #include <cstddef>
+#include "Option.hpp"
+#include "Iterator.hpp" 
 
 template<class T>
 class Sequence{
@@ -21,6 +23,17 @@ public:
     virtual Sequence<T>* Map(T (*func)(T)) = 0;
     virtual Sequence<T>* Where(bool (*predicate)(T)) = 0;
     virtual T Reduce(T (*func)(T, T), T initial) = 0;
+
+    virtual Option<T> TryGetFirst(bool (*predicate)(T) = nullptr) const = 0;
+    virtual Option<T> TryGetLast(bool (*predicate)(T) = nullptr) const = 0;
+
+    virtual Iterator<T> begin() = 0;
+    virtual Iterator<T> end() = 0;
+    virtual ConstIterator<T> begin() const = 0;
+    virtual ConstIterator<T> end() const = 0;
+
+    virtual ConstIterator<T> cbegin() const = 0;
+    virtual ConstIterator<T> cend() const = 0;
 
     // =о, те метод не имеет реализации в этом классе(abstract class)
 };

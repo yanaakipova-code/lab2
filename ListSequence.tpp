@@ -56,18 +56,10 @@ Sequence<T>* ListSequence<T>::GetSubsequence(size_t start_index, size_t end_inde
         throw std::out_of_range("Неверные индексы");
     }
 
-    LinkedList<T>* subList = m_list->GetSubList(start_index, end_index);
-   
-    T* tempData = new T[subList->GetLength()];
-    for (int i = 0; i < subList->GetLength(); i++) {
-        tempData[i] = subList->Get(i);
+    ListSequence<T>* result = new ListSequence<T>();
+    for (size_t i = start_index; i <= end_index; i++) {
+        result->Append(Get(i));
     }
-    
-    ListSequence<T>* result = new ListSequence<T>(tempData, subList->GetLength());
-
-    delete[] tempData;
-    delete subList;
-    
     return result;
 }
 
@@ -107,25 +99,23 @@ Sequence<T>* ListSequence<T>::Concat(Sequence<T>* other) const {
 
 template<class T>
 Sequence<T>* ListSequence<T>::Map(T (*func)(T)){
-    T* result = new T[GetLength()];
+    ListSequence<T>* result = new ListSequence<T>();
     for (size_t i = 0; i < GetLength(); i++) {
-        result[i] = func(Get(i));
+        result->Append(func(Get(i)));
     }
-    ListSequence<T>* new_seq = new ListSequence<T>(result, GetLength());
-    delete[] result;
-    return new_seq;
+    return result;
 }
 
 template<class T>
 Sequence<T>* ListSequence<T>::Where(bool (*predicate)(T)) {
-    DynamicArray<T> temp;
+    ListSequence<T>* result = new ListSequence<T>();
     for (size_t i = 0; i < GetLength(); i++) {
         T elem = Get(i);
         if (predicate(elem)) {
-            temp.Append(elem);
+            result->Append(elem);
         }
     }
-    return new ListSequence<T>(temp.GetData(), temp.GetSize());
+    return result;
 }
 
 
@@ -136,4 +126,36 @@ T ListSequence<T>::Reduce(T (*func)(T, T), T initial) {
         result = func(result, Get(i));
     }
     return result;
+}
+
+template<class T>
+Option<T> ListSequence<T>::TryGetFirst(bool (*predicate)(T)) const {
+    for (size_t i = 0; i < GetLength(); i++) {
+        T elem = Get(i);
+        if (predicate == nullptr || predicate(elem)) {
+            return Option<T>::Some(elem);
+        }
+    }
+    return Option<T>::None();
+}
+
+template<class T>
+Option<T> ListSequence<T>::TryGetLast(bool (*predicate)(T)) const {
+    for (size_t i = GetLength(); i > 0; i--) {
+        T elem = Get(i - 1);
+        if (predicate == nullptr || predicate(elem)) {
+            return Option<T>::Some(elem);
+        }
+    }
+    return Option<T>::None();
+}
+
+template<class T>
+ConstIterator<T> ListSequence<T>::cbegin() const {
+    return ConstIterator<T>(m_list->GetData());
+}
+
+template<class T>
+ConstIterator<T> ListSequence<T>::cend() const {
+    return ConstIterator<T>(m_list->GetData() + m_list->GetLength());
 }

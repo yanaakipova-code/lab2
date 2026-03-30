@@ -3,6 +3,7 @@
 #include <cstddef>
 #include "Sequence.hpp"
 #include "LinkedList.hpp"
+#include "Option.hpp"
 
 template<class T>
 class ListSequence : public Sequence<T>{
@@ -30,6 +31,17 @@ public:
     Sequence<T>* Map(T (*func)(T)) override;
     Sequence<T>* Where(bool (*predicate)(T)) override;
     T Reduce(T (*func)(T, T), T initial) override;
+
+    Option<T> TryGetFirst(bool (*predicate)(T) = nullptr) const override;
+    Option<T> TryGetLast(bool (*predicate)(T) = nullptr) const override;
+
+    Iterator<T> begin() override;
+    Iterator<T> end() override;
+    ConstIterator<T> begin() const override;
+    ConstIterator<T> end() const override;
+
+    ConstIterator<T> cbegin() const;
+    ConstIterator<T> cend() const;
 };
 
 #include "ListSequence.tpp"

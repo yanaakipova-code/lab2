@@ -73,3 +73,33 @@ std::unique_ptr<ListSequence<T>> ImmutableListSequence<T>::ToMutable() const {
     delete[] dataCopy;
     return result;
 }
+
+template<class T>
+Iterator<T> ImmutableListSequence<T>::begin() {
+    return ListSequence<T>::begin();
+}
+
+template<class T>
+Iterator<T> ImmutableListSequence<T>::end() {
+    return ListSequence<T>::end();
+}
+
+template<class T>
+ConstIterator<T> ImmutableListSequence<T>::begin() const {
+    return ListSequence<T>::begin();
+}
+
+template<class T>
+ConstIterator<T> ImmutableListSequence<T>::end() const {
+    return ListSequence<T>::end();
+}
+
+template<class T>
+ConstIterator<T> ImmutableListSequence<T>::cbegin() const {
+    return ListSequence<T>::cbegin();
+}
+
+template<class T>
+ConstIterator<T> ImmutableListSequence<T>::cend() const {
+    return ListSequence<T>::cend();
+}

@@ -1,6 +1,14 @@
 #include <cstddef>
 #include <stdexcept> 
 #include "DynamicArray.hpp"
+
+template<class T>
+DynamicArray<T>::DynamicArray() {
+    m_size = 0;
+    m_capacity = 1;
+    m_data = new T[m_capacity];
+}
+
 template<class T>
 DynamicArray<T>::DynamicArray(T* items, size_t count){
     m_size = count;
@@ -8,7 +16,7 @@ DynamicArray<T>::DynamicArray(T* items, size_t count){
     m_data = new T[m_capacity];
     for(size_t i = 0; i< count; i++){
         m_data[i] = items[i];
-    }
+    } 
 }
 
 template<class T>
@@ -97,4 +105,20 @@ T* DynamicArray<T>::GetData() {
 template<class T>
 const T* DynamicArray<T>::GetData() const {
     return m_data;
+}
+
+template<class T>
+T& DynamicArray<T>::GetRef(size_t index) {
+    if(index >= m_size){
+        throw std::out_of_range("Индекс за пределами массива в функции GetRef");
+    }
+    return m_data[index];
+}
+
+template<class T>
+const T& DynamicArray<T>::GetRef(size_t index) const {
+    if(index >= m_size){
+        throw std::out_of_range("Индекс за пределами массива в функции GetRef const");
+    }
+    return m_data[index];
 }

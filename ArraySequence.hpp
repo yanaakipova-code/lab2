@@ -39,11 +39,14 @@ public:
     T& operator[](size_t index);
     const T& operator[](size_t index) const;
 
-Iterator<T> begin() override;
-Iterator<T> end() override;
+    Iterator<T> begin() override;
+    Iterator<T> end() override;
 
-ConstIterator<T> begin() const override;
-ConstIterator<T> end() const override;
+    ConstIterator<T> begin() const override;
+    ConstIterator<T> end() const override;
+
+    virtual ConstIterator<T> cbegin() const;
+    virtual ConstIterator<T> cend() const;
 };
 
 #include "ArraySequence.tpp"

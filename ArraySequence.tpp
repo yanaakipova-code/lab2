@@ -1,6 +1,7 @@
 #include "ArraySequence.hpp"
 #include "Iterator.hpp"
 #include "Option.hpp"
+#include "Bit.hpp"
 #include <stdexcept>
 #include <cstddef>
 #include "Sequence.hpp"
@@ -181,6 +182,16 @@ ConstIterator<T> ArraySequence<T>::begin() const {
 
 template<class T>
 ConstIterator<T> ArraySequence<T>::end() const {
+    return ConstIterator<T>(m_items->GetData() + m_items->GetSize());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::cbegin() const {
+    return ConstIterator<T>(m_items->GetData());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::cend() const {
     return ConstIterator<T>(m_items->GetData() + m_items->GetSize());
 }
 

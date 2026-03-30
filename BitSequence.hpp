@@ -4,6 +4,9 @@
 #include "Sequence.hpp"
 #include "ArraySequence.hpp"
 #include "Bit.hpp"
+#include "Option.hpp"
+#include "Iterator.hpp"
+
 class BitSequence: public Sequence<Bit>{
 private:
     ArraySequence<Bit>* m_bits;
@@ -23,6 +26,12 @@ public:
     void Prepend(Bit temp) override;
     void InsertAt(Bit temp, size_t index) override;
     Sequence<Bit>* Concat(Sequence<Bit>* other) const override;
+    
+    Sequence<Bit>* Map(Bit (*func)(Bit)) override;
+    Sequence<Bit>* Where(bool (*predicate)(Bit)) override;
+    Bit Reduce(Bit (*func)(Bit, Bit), Bit initial) override;
+    Option<Bit> TryGetFirst(bool (*predicate)(Bit) = nullptr) const override;
+    Option<Bit> TryGetLast(bool (*predicate)(Bit) = nullptr) const override;
 
     std::unique_ptr<BitSequence> And(const BitSequence& other) const;
     std::unique_ptr<BitSequence> Or(const BitSequence& other) const;
@@ -31,6 +40,18 @@ public:
 
     void SetBit(size_t index, bool value);
     bool GetBit(size_t index) const;
-    
+
     std::unique_ptr<ArraySequence<Bit>> ToMutable() const;
+    
+    BitSequence operator&(const BitSequence& other) const;
+    BitSequence operator|(const BitSequence& other) const;
+    BitSequence operator^(const BitSequence& other) const;
+    BitSequence operator~() const;
+    Bit& operator[](size_t index);
+    const Bit& operator[](size_t index) const;
+
+    Iterator<Bit> begin() override;
+    Iterator<Bit> end() override;
+    ConstIterator<Bit> begin() const override;
+    ConstIterator<Bit> end() const override;
 };

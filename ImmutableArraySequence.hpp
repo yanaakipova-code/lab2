@@ -20,6 +20,13 @@ public:
 
     std::unique_ptr<Sequence<T>> Concat(Sequence<T>* other) const override;
     std::unique_ptr<ArraySequence<T>> ToMutable() const;
+
+    Iterator<T> begin() override;
+    Iterator<T> end() override;
+    ConstIterator<T> begin() const override;
+    ConstIterator<T> end() const override;
+    ConstIterator<T> cbegin() const;
+    ConstIterator<T> cend() const;
 };
 
 #include "ImmutableArraySequence.tpp"

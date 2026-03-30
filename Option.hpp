@@ -49,12 +49,11 @@ public:
         return Option<U>::None();
     }
 
-    template<typename U>
-    T OrElse(const T& default_value) const {
+    T OrElse(const T& defaultValue) const {
         if (m_hasValue) {
             return m_value;
         } else {
-            return default_value;
+            return defaultValue;
         }
     }
 
