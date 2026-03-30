@@ -1,5 +1,9 @@
 #include "ArraySequence.hpp"
+#include "Iterator.hpp"
+#include "Option.hpp"
 #include <stdexcept>
+#include <cstddef>
+#include "Sequence.hpp"
 
 template<class T>
 ArraySequence<T>::ArraySequence(){
@@ -54,16 +58,12 @@ Sequence<T>* ArraySequence<T>::GetSubsequence(size_t start_index, size_t end_ind
         throw std::out_of_range("Недопустимые индексы для ArraySequence");
     }
     
-    int newSize = end_index - start_index + 1;
-    T* tempData = new T[newSize];
-
-    for (int i = 0; i < newSize; i++) {
-        tempData[i] = m_items->Get(start_index + i);
+    ArraySequence<T>* result = new ArraySequence<T>();
+    for (size_t i = start_index; i <= end_index; i++) {
+        result->Append(m_items->Get(i));
     }
-    
-    ArraySequence<T>* result = new ArraySequence<T>(tempData, newSize);
-    delete[] tempData;
     return result;
+
 }
 
 template<class T>
@@ -106,50 +106,32 @@ Sequence<T>* ArraySequence<T>::Concat(Sequence<T>* other) const {
         throw std::invalid_argument("Нулквой указатель");
     }
     
-    int this_size = GetLength();
-    int other_size = other->GetLength();
-    int new_size = this_size + other_size;
-    
-    T* temp_data = new T[new_size];
-
-    for (int i = 0; i < this_size; i++) {
-        temp_data[i] = Get(i);
+    ArraySequence<T>* result = new ArraySequence<T>(*this);
+    for (size_t i = 0; i < other->GetLength(); i++) {
+        result->Append(other->Get(i));
     }
-    
-    for (int i = 0; i < other_size; i++) {
-        temp_data[this_size + i] = other->Get(i);
-    }
-
-    ArraySequence<T>* result = new ArraySequence<T>(temp_data, new_size);
-    delete[] temp_data;
     return result;
 }
 
 template<class T>
 Sequence<T>* ArraySequence<T>::Map(T (*func)(T)){
-    T* result = new T[GetLength()];
-    for (size_t i = 0; i < GetLength(); i++){
-        result[i] = func(get(i));
+    ArraySequence<T>* result = new ArraySequence<T>();
+    for (size_t i = 0; i < GetLength(); i++) {
+        result->Append(func(Get(i)));
     }
-    return new ArraySequence<T>(result, GetLength());
+    return result;
 }
 
 template<class T>
-Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(T)){
-    DynamicArray<T> temp;
+Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(T)) {
+   ArraySequence<T>* result = new ArraySequence<T>();
     for (size_t i = 0; i < GetLength(); i++) {
         T elem = Get(i);
         if (predicate(elem)) {
-            temp.Append(elem);
+            result->Append(elem);
         }
     }
-    T* result = new T[temp.GetSize()];
-    for (size_t i = 0; i < temp.GetSize(); i++){
-        result[i] = temp.Get(i);
-    }
-    ArraySequence<T>* res = new ArraySequence<T>(result, temp.GetSize());
-    delete[] result;
-    return res;
+    return result;
 }
 
 template<class T>
@@ -159,4 +141,56 @@ T ArraySequence<T>::Reduce(T (*func)(T, T), T initial){
         result = func(result, Get(i));
     }
     return result;
+}
+
+template<class T>
+Option<T> ArraySequence<T>::TryGetFirst(bool (*predicate)(T)) const {
+    for (size_t i = 0; i < GetLength(); i++) {
+        T elem = Get(i);
+        if (predicate == nullptr || predicate(elem)) {
+            return Option<T>::Some(elem);
+        }
+    }
+    return Option<T>::None();
+}
+
+template<class T>
+Option<T> ArraySequence<T>::TryGetLast(bool (*predicate)(T)) const {
+    for (size_t i = GetLength(); i > 0; i--) {
+        T elem = Get(i - 1);
+        if (predicate == nullptr || predicate(elem)) {
+            return Option<T>::Some(elem);
+        }
+    }
+    return Option<T>::None();
+}
+template<class T>
+Iterator<T> ArraySequence<T>::begin() {
+    return Iterator<T>(m_items->GetData());
+}
+
+template<class T>
+Iterator<T> ArraySequence<T>::end() {
+    return Iterator<T>(m_items->GetData() + m_items->GetSize());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::begin() const {
+    return ConstIterator<T>(m_items->GetData());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::end() const {
+    return ConstIterator<T>(m_items->GetData() + m_items->GetSize());
+}
+
+// для доп баллов
+template<class T>
+T& ArraySequence<T>::operator[](size_t index) {
+    return m_items->GetRef(index);
+}
+
+template<class T>
+const T& ArraySequence<T>::operator[](size_t index) const {
+    return m_items->GetRef(index);
 }
