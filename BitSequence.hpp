@@ -54,4 +54,7 @@ public:
     Iterator<Bit> end() override;
     ConstIterator<Bit> begin() const override;
     ConstIterator<Bit> end() const override;
+
+    ConstIterator<Bit> cbegin() const override;
+    ConstIterator<Bit> cend() const override;
 };

@@ -188,3 +188,11 @@ ConstIterator<Bit> BitSequence::begin() const {
 ConstIterator<Bit> BitSequence::end() const {
     return ConstIterator<Bit>(&(*m_bits->end()));
 }
+
+ConstIterator<Bit> BitSequence::cbegin() const {
+    return ConstIterator<Bit>(&(*m_bits->cbegin()));
+}
+
+ConstIterator<Bit> BitSequence::cend() const {
+    return ConstIterator<Bit>(&(*m_bits->cend()));
+}

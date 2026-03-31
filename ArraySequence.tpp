@@ -27,6 +27,46 @@ ArraySequence<T>::~ArraySequence(){
 }
 
 template<class T>
+Option<T> ArraySequence<T>::TryGetLast(bool (*predicate)(T)) const {
+    for (size_t i = GetLength(); i > 0; i--) {
+        T elem = Get(i - 1);
+        if (predicate == nullptr || predicate(elem)) {
+            return Option<T>::Some(elem);
+        }
+    }
+    return Option<T>::None();
+}
+template<class T>
+Iterator<T> ArraySequence<T>::begin() {
+    return Iterator<T>(m_items->GetData());
+}
+
+template<class T>
+Iterator<T> ArraySequence<T>::end() {
+    return Iterator<T>(m_items->GetData() + m_items->GetSize());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::begin() const {
+    return ConstIterator<T>(m_items->GetData());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::end() const {
+    return ConstIterator<T>(m_items->GetData() + m_items->GetSize());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::cbegin() const {
+    return ConstIterator<T>(m_items->GetData());
+}
+
+template<class T>
+ConstIterator<T> ArraySequence<T>::cend() const {
+    return ConstIterator<T>(m_items->GetData() + m_items->GetSize());
+}
+
+template<class T>
 T ArraySequence<T>::GetFirst() const{
     if (m_items->GetSize() == 0) {
         throw std::out_of_range("ArraySequence пуст");
@@ -115,19 +155,19 @@ Sequence<T>* ArraySequence<T>::Concat(Sequence<T>* other) const {
 }
 
 template<class T>
-Sequence<T>* ArraySequence<T>::Map(T (*func)(T)){
+Sequence<T>* ArraySequence<T>::Map(T (*func)(T)) {
     ArraySequence<T>* result = new ArraySequence<T>();
-    for (size_t i = 0; i < GetLength(); i++) {
-        result->Append(func(Get(i)));
+    for (auto it = begin(); it != end(); ++it) {
+        result->Append(func(*it));
     }
     return result;
 }
 
 template<class T>
 Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(T)) {
-   ArraySequence<T>* result = new ArraySequence<T>();
-    for (size_t i = 0; i < GetLength(); i++) {
-        T elem = Get(i);
+    ArraySequence<T>* result = new ArraySequence<T>();
+    for (auto it = begin(); it != end(); ++it) {
+        T elem = *it;
         if (predicate(elem)) {
             result->Append(elem);
         }
@@ -136,18 +176,18 @@ Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(T)) {
 }
 
 template<class T>
-T ArraySequence<T>::Reduce(T (*func)(T, T), T initial){
+T ArraySequence<T>::Reduce(T (*func)(T, T), T initial) {
     T result = initial;
-    for (size_t i = 0; i < GetLength(); i++) {
-        result = func(result, Get(i));
+    for (auto it = begin(); it != end(); ++it) {
+        result = func(result, *it);
     }
     return result;
 }
 
 template<class T>
 Option<T> ArraySequence<T>::TryGetFirst(bool (*predicate)(T)) const {
-    for (size_t i = 0; i < GetLength(); i++) {
-        T elem = Get(i);
+    for (auto it = begin(); it != end(); ++it) {
+        T elem = *it;
         if (predicate == nullptr || predicate(elem)) {
             return Option<T>::Some(elem);
         }
@@ -157,42 +197,14 @@ Option<T> ArraySequence<T>::TryGetFirst(bool (*predicate)(T)) const {
 
 template<class T>
 Option<T> ArraySequence<T>::TryGetLast(bool (*predicate)(T)) const {
-    for (size_t i = GetLength(); i > 0; i--) {
+    size_t len = GetLength();
+    for (size_t i = len; i > 0; i--) {
         T elem = Get(i - 1);
         if (predicate == nullptr || predicate(elem)) {
             return Option<T>::Some(elem);
         }
     }
     return Option<T>::None();
-}
-template<class T>
-Iterator<T> ArraySequence<T>::begin() {
-    return Iterator<T>(m_items->GetData());
-}
-
-template<class T>
-Iterator<T> ArraySequence<T>::end() {
-    return Iterator<T>(m_items->GetData() + m_items->GetSize());
-}
-
-template<class T>
-ConstIterator<T> ArraySequence<T>::begin() const {
-    return ConstIterator<T>(m_items->GetData());
-}
-
-template<class T>
-ConstIterator<T> ArraySequence<T>::end() const {
-    return ConstIterator<T>(m_items->GetData() + m_items->GetSize());
-}
-
-template<class T>
-ConstIterator<T> ArraySequence<T>::cbegin() const {
-    return ConstIterator<T>(m_items->GetData());
-}
-
-template<class T>
-ConstIterator<T> ArraySequence<T>::cend() const {
-    return ConstIterator<T>(m_items->GetData() + m_items->GetSize());
 }
 
 // для доп баллов
