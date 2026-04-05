@@ -35,8 +35,8 @@ private:
         
         if (lastBits != 0) {
             uint32_t mask = (1u << lastBits) - 1;
-            uint32_t lastVal = m_data->Get(cells - 1);
-            m_data->Set(cells - 1, lastVal & mask);
+            uint32_t last_val = m_data->Get(cells - 1);//Достаём текущее значение последней ячейки
+            m_data->Set(cells - 1, last_val & mask);//Очищаем мусорные биты и сохраняем обратно
         }
     }
 
@@ -78,14 +78,4 @@ public:
     BitSequence operator|(const BitSequence& other) const;
     BitSequence operator^(const BitSequence& other) const;
     BitSequence operator~() const;
-    
-    Bit& operator[](size_t index);
-    const Bit& operator[](size_t index) const;
-
-    Iterator<Bit> begin() override;
-    Iterator<Bit> end() override;
-    ConstIterator<Bit> begin() const override;
-    ConstIterator<Bit> end() const override;
-    ConstIterator<Bit> cbegin() const override;
-    ConstIterator<Bit> cend() const override;
 };
