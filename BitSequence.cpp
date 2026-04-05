@@ -340,3 +340,26 @@ BitSequence BitSequence::operator~() const {
     return *result;
 }
 
+Bit& BitSequence::operator[](size_t index) {
+    throw std::runtime_error("BitSequence::operator[]: используйте SetBit/GetBit");
+}
+
+const Bit& BitSequence::operator[](size_t index) const {
+    throw std::runtime_error("BitSequence::operator[]: используйте GetBit");
+}
+
+Iterator<Bit> BitSequence::begin() {
+    throw std::runtime_error("BitSequence::begin(): итераторы требуют временного массива");
+}
+
+Iterator<Bit> BitSequence::end() {
+    throw std::runtime_error("BitSequence::end(): итераторы требуют временного массива");
+}
+
+ConstIterator<Bit> BitSequence::begin() const {
+    throw std::runtime_error("BitSequence::begin() const: итераторы требуют временного массива");
+}
+
+ConstIterator<Bit> BitSequence::end() const {
+    throw std::runtime_error("BitSequence::end() const: итераторы требуют временного массива");
+}
