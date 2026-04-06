@@ -1,6 +1,6 @@
 #include "ListSequence.hpp"
 #include <stdexcept>
-
+#include "Error.hpp"
 template<class T>
 ListSequence<T>::ListSequence() {
     m_list = new LinkedList<T>();
@@ -9,7 +9,7 @@ ListSequence<T>::ListSequence() {
 template<class T>
 ListSequence<T>::ListSequence(T* items, size_t count){
     if (items == nullptr && count > 0) {
-        throw std::invalid_argument("у списка нулевой указатель");
+        throw NullPointerException("у списка нулевой указатель");
     }
     m_list = new LinkedList<T>(items, count);
 }
@@ -27,7 +27,7 @@ ListSequence<T>::~ListSequence() {
 template<class T>
 T ListSequence<T>::GetFirst() const {
     if (m_list->GetLength() == 0) {
-        throw std::out_of_range("Sequence пуст");
+        throw OutOfRangeException("Sequence пуст");
     }
     return m_list->GetFirst();
 }
@@ -35,7 +35,7 @@ T ListSequence<T>::GetFirst() const {
 template<class T>
 T ListSequence<T>::GetLast() const {
     if (m_list->GetLength() == 0) {
-        throw std::out_of_range("Sequence пуст");
+        throw EmptySequenceException("Sequence пуст");
     }
     return m_list->GetLast();
 }
@@ -53,7 +53,7 @@ size_t ListSequence<T>::GetLength() const {
 template<class T>
 Sequence<T>* ListSequence<T>::GetSubsequence(size_t start_index, size_t end_index) const {
     if (start_index < 0 || end_index >= GetLength() || start_index > end_index) {
-        throw std::out_of_range("Неверные индексы");
+        throw OutOfRangeException("Неверные индексы");
     }
 
     ListSequence<T>* result = new ListSequence<T>();
@@ -76,7 +76,7 @@ void ListSequence<T>::Prepend(T temp) {
 template<class T>
 void ListSequence<T>::InsertAt(T temp, size_t index) {
     if (index < 0 || index > GetLength()) {
-        throw std::out_of_range("Индекс за передлами массива");
+        throw OutOfRangeException("Индекс за передлами массива");
     }
     
     m_list->InsertAt(temp, index);
@@ -85,7 +85,7 @@ void ListSequence<T>::InsertAt(T temp, size_t index) {
 template<class T>
 Sequence<T>* ListSequence<T>::Concat(Sequence<T>* other) const {
     if (other == nullptr) {
-        throw std::invalid_argument("у списка нулевой указатель");
+        throw NullPointerException("у списка нулевой указатель");
     }
     
     ListSequence<T>* result = new ListSequence<T>(*this);
@@ -183,7 +183,7 @@ ConstIterator<T> ListSequence<T>::cend() const {
 template<class T>
 T& ListSequence<T>::operator[](size_t index) {
     if (index >= GetLength()) {
-        throw std::out_of_range("Индекс за выходит за пределы");
+        throw OutOfRangeException("Индекс за выходит за пределы");
     }
     
     auto it = begin();
@@ -196,7 +196,7 @@ T& ListSequence<T>::operator[](size_t index) {
 template<class T>
 const T& ListSequence<T>::operator[](size_t index) const {
     if (index >= GetLength()) {
-        throw std::out_of_range("Индекс за выходит за пределы");
+        throw OutOfRangeException("Индекс за выходит за пределы");
     }
     
     auto it = begin();

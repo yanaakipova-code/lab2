@@ -1,5 +1,6 @@
 #include "BitSequence.hpp"
 #include "ArraySequence.hpp" 
+#include "Error.hpp"
 #include <memory>
 #include <cstddef>
 #include <cstdint>
@@ -51,7 +52,7 @@ BitSequence::~BitSequence() {
 
 Bit BitSequence::GetFirst() const {
     if (m_bit_count == 0) {
-        throw std::out_of_range("BitSequence пуст");
+        throw Out("BitSequence пуст");
     }
     return Get(0);
 }
@@ -339,34 +340,25 @@ BitSequence BitSequence::operator~() const {
     auto result = Not();
     return *result;
 }
-
-Bit& BitSequence::operator[](size_t index) {
-    throw std::runtime_error("BitSequence::operator[]: используйте SetBit/GetBit");
-}
-
-const Bit& BitSequence::operator[](size_t index) const {
-    throw std::runtime_error("BitSequence::operator[]: используйте GetBit");
-}
-
 Iterator<Bit> BitSequence::begin() {
-    throw std::runtime_error("BitSequence::begin(): итераторы требуют временного массива");
+    throw std::runtime_error("BitSequence::begin(): итераторы не поддерживаются");
 }
 
 Iterator<Bit> BitSequence::end() {
-    throw std::runtime_error("BitSequence::end(): итераторы требуют временного массива");
+    throw std::runtime_error("BitSequence::end(): итераторы не поддерживаются");
 }
 
 ConstIterator<Bit> BitSequence::begin() const {
-    throw std::runtime_error("BitSequence::begin() const: итераторы требуют временного массива");
+    throw std::runtime_error("BitSequence::begin() const: итераторы не поддерживаются");
 }
 
 ConstIterator<Bit> BitSequence::end() const {
-    throw std::runtime_error("BitSequence::end() const: итераторы требуют временного массива");
+    throw std::runtime_error("BitSequence::end() const: итераторы не поддерживаются");
 }
 ConstIterator<Bit> BitSequence::cbegin() const {
-    throw std::runtime_error("BitSequence::cbegin(): итераторы требуют временного массива");
+    throw std::runtime_error("BitSequence::cbegin(): итераторы не поддерживаются");
 }
 
 ConstIterator<Bit> BitSequence::cend() const {
-    throw std::runtime_error("BitSequence::cend(): итераторы требуют временного массива");
+    throw std::runtime_error("BitSequence::cend(): итераторы не поддерживаются");
 }

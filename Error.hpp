@@ -1,4 +1,4 @@
-
+#pragma once
 class Exception{
 private:
     const char* m_message;
@@ -33,4 +33,14 @@ public:
 class NullPointerException : public Exception {
 public:
     NullPointerException(const char* message) : Exception(message) {}
+};
+
+class ChangeImmutableException: public Exception{
+public:
+    ChangeImmutableException(const char* message): Exception(message) {}
+};
+
+class ZeroStepException: public Exception{
+public:
+    ZeroStepException(const char* message): Exception(message) {}
 };

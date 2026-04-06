@@ -1,4 +1,5 @@
 #include "ImmutableListSequence.hpp"
+#include "Error.hpp"
 #include <memory>
 
 
@@ -16,17 +17,17 @@ ImmutableListSequence<T>::ImmutableListSequence(const ImmutableListSequence<T>& 
 
 template<class T>
 void ImmutableListSequence<T>::Append(T temp) {
-    throw std::runtime_error("Нельзя изменять неизменяемую последовательность");
+    throw ChangeImmutableException("Нельзя изменять неизменяемую последовательность");
 }
 
 template<class T>
 void ImmutableListSequence<T>::Prepend(T temp) {
-    throw std::runtime_error("Нельзя изменять неизменяемую последовательность");
+    throw ChangeImmutableException("Нельзя изменять неизменяемую последовательность");
 }
 
 template<class T>
 void ImmutableListSequence<T>::InsertAt(T temp, size_t index) {
-    throw std::runtime_error("Нельзя изменять неизменяемую последовательность");
+    throw ChangeImmutableException("Нельзя изменять неизменяемую последовательность");
 }
 
 template<class T>
@@ -46,7 +47,7 @@ std::unique_ptr<ImmutableListSequence<T>> ImmutableListSequence<T>::WithPrepend(
 template<class T>
 std::unique_ptr<ImmutableListSequence<T>> ImmutableListSequence<T>::WithInsertAt(T item, size_t index) const {
     if (index < 0 || index > this->GetLength()) {
-        throw std::out_of_range("Индекс вне диапазона");
+        throw OutOfRangeException("Индекс вне диапазона");
     }
     auto copy = std::make_unique<ImmutableListSequence<T>>(*this);
     copy->ListSequence<T>::InsertAt(item, index);

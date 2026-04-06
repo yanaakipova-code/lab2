@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
@@ -11,13 +12,14 @@
 #include "Iterator.hpp"
 #define BITS_PER_CELL 32
 
+template <std::integral T>
 class BitSequence : public Sequence<Bit> {
 private:
-    DynamicArray<uint32_t>* m_data;
+    DynamicArray<T>* m_data;
     size_t m_bit_count;
     
     size_t GetCellIndex(size_t bit_index) const {
-        return bit_index / BITS_PER_CELL;
+        return bit_index / sizeof(T);
     }
     
     size_t GetBitOffset(size_t bit_index) const {

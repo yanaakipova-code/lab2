@@ -1,4 +1,5 @@
 #include "ImmutableArraySequence.hpp"
+#include "Error.hpp"
 #include <memory>
 
 template<class T>
@@ -15,17 +16,17 @@ ImmutableArraySequence<T>::ImmutableArraySequence(const ImmutableArraySequence<T
 
 template<class T>
 void ImmutableArraySequence<T>::Append(T temp) {
-    throw std::runtime_error("Ошибка: нельзя изменять неизменяемую последовательность (Append запрещен)");
+    throw ChangeImmutableException("Ошибка: нельзя изменять неизменяемую последовательность (Append запрещен)");
 }
 
 template<class T>
 void ImmutableArraySequence<T>::Prepend(T temp) {
-    throw std::runtime_error("Ошибка: нельзя изменять неизменяемую последовательность (Prepend запрещен)");
+    throw ChangeImmutableException("Ошибка: нельзя изменять неизменяемую последовательность (Prepend запрещен)");
 }
 
 template<class T>
 void ImmutableArraySequence<T>::InsertAt(T temp, size_t index) {
-    throw std::runtime_error("Ошибка: нельзя изменять неизменяемую последовательность (InsertAt запрещен)");
+    throw ChangeImmutableException("Ошибка: нельзя изменять неизменяемую последовательность (InsertAt запрещен)");
 }
 
 template<class T>

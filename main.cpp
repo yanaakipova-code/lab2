@@ -52,7 +52,7 @@ int main() {
     g_bit_seq->Append(Bit(false));
     
     DrawUI();
-    mvprintw(14, 0, "Press 1,2,3 to select type, A/P/I/M/W/R/C/Q to execute");
+    mvprintw(14, 0, "Enter the command");
     refresh();
     
     int ch;

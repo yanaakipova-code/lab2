@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <stdexcept> 
 #include "DynamicArray.hpp"
+#include "Error.hpp"
 
 template<class T>
 DynamicArray<T>::DynamicArray() {
@@ -57,7 +58,7 @@ DynamicArray<T>::~DynamicArray() {
 template<class T>
 T DynamicArray<T>::Get(size_t index) {
     if (index >= m_size) {
-        throw std::out_of_range("DynamicArray::Get: индекс за пределами массива");
+        throw OutOfRangeException("DynamicArray::Get: индекс за пределами массива");
     }
     return m_data[index];
 }
@@ -70,7 +71,7 @@ size_t DynamicArray<T>::GetSize() {
 template<class T>
 void DynamicArray<T>::Set(size_t index, T value) {
     if (index >= m_size) {
-        throw std::out_of_range("DynamicArray::Set: индекс за пределами массива");
+        throw OutOfRangeException("DynamicArray::Set: индекс за пределами массива");
     }
     m_data[index] = value;
 }
@@ -117,7 +118,7 @@ const T* DynamicArray<T>::GetData() const {
 template<class T>
 T& DynamicArray<T>::GetRef(size_t index) {
     if (index >= m_size) {
-        throw std::out_of_range("DynamicArray::GetRef: индекс за пределами массива");
+        throw OutOfRangeException("DynamicArray::GetRef: индекс за пределами массива");
     }
     return m_data[index];
 }
@@ -125,7 +126,7 @@ T& DynamicArray<T>::GetRef(size_t index) {
 template<class T>
 const T& DynamicArray<T>::GetRef(size_t index) const {
     if (index >= m_size) {
-        throw std::out_of_range("DynamicArray::GetRef const: индекс за пределами массива");
+        throw OutOfRangeException("DynamicArray::GetRef const: индекс за пределами массива");
     }
     return m_data[index];
 }

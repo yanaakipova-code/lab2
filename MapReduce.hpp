@@ -83,7 +83,7 @@ Sequence<U>* FlatMap(Sequence<T>& seq, Sequence<U>* (*func)(const T&)) {
 template<class T>
 Sequence<T>* Range(T start, T end, T step = 1){
     if (step == 0){
-        throw std::invalid_argument("Range: step cannot be zero");
+        throw ZeroStepException("Range: step cannot be zero");
     } 
     ArraySequence<T>* result = new ArraySequence<T>();
     T current = start;

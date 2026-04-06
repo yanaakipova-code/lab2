@@ -1,4 +1,5 @@
 #include "LinkedList.hpp"
+#include "Error.hpp"
 #include <cstddef>
 #include <stdexcept> 
 template<class T>
@@ -9,7 +10,7 @@ LinkedList<T>::LinkedList (T* items, size_t count)
     : LinkedList()
     {
         if (items == nullptr){
-            throw std::invalid_argument("Нулевое значение аргумента");
+            throw NullPointerException("Нулевое значение аргумента");
         }
 
         for (size_t i = 0; i < count; ++i) {
@@ -61,7 +62,7 @@ LinkedList<T>::~LinkedList() {
 template<class T>
 T LinkedList<T>::GetFirst() const {
     if(m_size == 0){
-        throw std::out_of_range("Список пуст");
+        throw OutOfRangeException("Список пуст");
     }
     return m_head->data;
 }
@@ -69,7 +70,7 @@ T LinkedList<T>::GetFirst() const {
 template<class T>
 T LinkedList<T>::GetLast() const {
     if(m_size == 0){
-        throw std::out_of_range("Список пуст");
+        throw OutOfRangeException("Список пуст");
     }
     return m_tail->data;
 
@@ -77,7 +78,7 @@ T LinkedList<T>::GetLast() const {
 template<class T>
 typename LinkedList<T>::Node* LinkedList<T>::GetNode(size_t index) const {
     if (index >= m_size) {
-        throw std::out_of_range("Индекс за списком");
+        throw OutOfRangeException("Индекс за списком");
     }
     Node* current;
     if (index < m_size / 2) {
@@ -148,7 +149,7 @@ void LinkedList<T>::Append(T temp) {
 template<class T>
 LinkedList<T>* LinkedList<T>::GetSubList(size_t start_index, size_t end_index) const {
     if (start_index > end_index || end_index >= m_size) {
-        throw std::out_of_range("Индекс за размером списка");
+        throw OutOfRangeException"Индекс за размером списка");
     }
 
     LinkedList<T>* sub_list = new LinkedList<T>();
@@ -184,7 +185,7 @@ void LinkedList<T>::Prepend(T temp){
 template<class T>
 void LinkedList<T>::InsertAt(T temp,size_t index){
     if (index > m_size){
-        throw std::out_of_range("Индекс за массивом");
+        throw OutOfRangeException("Индекс за массивом");
     }
     if(index == 0){
         Prepend(temp);
@@ -225,7 +226,7 @@ void LinkedList<T>::Set(size_t index, T value){
 template<class T>
 void LinkedList<T>::RemoveAt(size_t index){
     if (index >= m_size) {
-        throw std::out_of_range("Индекс за пределами списка");
+        throw OutOfRangeException("Индекс за пределами списка");
     }
 
     Node* to_delete = GetNode(index);

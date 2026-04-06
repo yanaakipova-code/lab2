@@ -35,6 +35,5 @@ public:
     virtual ConstIterator<T> cbegin() const = 0;
     virtual ConstIterator<T> cend() const = 0;
 
-    // =о, те метод не имеет реализации в этом классе(abstract class)
 };
 

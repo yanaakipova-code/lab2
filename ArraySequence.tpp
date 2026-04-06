@@ -2,6 +2,7 @@
 #include "Iterator.hpp"
 #include "Option.hpp"
 #include "Bit.hpp"
+#include "Error.h"
 #include <stdexcept>
 #include <cstddef>
 #include "Sequence.hpp"
@@ -59,7 +60,7 @@ ConstIterator<T> ArraySequence<T>::cend() const {
 template<class T>
 T ArraySequence<T>::GetFirst() const{
     if (m_items->GetSize() == 0) {
-        throw std::out_of_range("ArraySequence пуст");
+        throw OutOfRangeException("ArraySequence пуст");
     }
     return m_items->Get(0);
 }
@@ -68,7 +69,7 @@ template<class T>
 T ArraySequence<T>::GetLast() const {
     int size = m_items->GetSize();
     if (size == 0) {
-        throw std::out_of_range("ArraySequence пуст");
+        throw OutOfRangeException("ArraySequence пуст");
     }
     return m_items->Get(size - 1);
 }
@@ -86,7 +87,7 @@ size_t ArraySequence<T>::GetLength() const {
 template<class T>
 Sequence<T>* ArraySequence<T>::GetSubsequence(size_t start_index, size_t end_index) const {
     if (start_index < 0 || end_index >= GetLength() || start_index > end_index) {
-        throw std::out_of_range("Недопустимые индексы для ArraySequence");
+        throw InvalidArgumentException("Недопустимые индексы для ArraySequence");
     }
     
     ArraySequence<T>* result = new ArraySequence<T>();
@@ -114,7 +115,7 @@ void ArraySequence<T>::InsertAt(T temp, size_t index) {
     size_t old_size = m_items->GetSize();
     
     if (index < 0 || index > old_size) {
-        throw std::out_of_range("Индекс за массивом");
+        throw OutOfRangeException("Индекс за массивом");
     }
     
     m_items->Resize(old_size + 1);
@@ -134,7 +135,7 @@ void ArraySequence<T>::Set(size_t index, T value) {
 template<class T>
 Sequence<T>* ArraySequence<T>::Concat(Sequence<T>* other) const {
     if (other == nullptr) {
-        throw std::invalid_argument("Нулквой указатель");
+        throw NullPointerException("Нулевой указатель");
     }
     
     ArraySequence<T>* result = new ArraySequence<T>(*this);
