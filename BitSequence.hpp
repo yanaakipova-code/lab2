@@ -10,7 +10,6 @@
 #include "Bit.hpp"
 #include "Option.hpp"
 #include "Iterator.hpp"
-#define BITS_PER_CELL 32
 
 template <std::integral T>
 class BitSequence : public Sequence<Bit> {
@@ -23,11 +22,11 @@ private:
     }
     
     size_t GetBitOffset(size_t bit_index) const {
-        return bit_index % BITS_PER_CELL;
+        return bit_index % sizeof(T);
     }
     
     size_t GetCellsCount() const {
-        return (m_bit_count + BITS_PER_CELL - 1) / BITS_PER_CELL;
+        return (m_bit_count + sizeof(T);) / sizeof(T);;
     }
     
     void ClearUnusedBits() {

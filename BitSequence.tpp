@@ -1,0 +1,370 @@
+#include "BitSequence.hpp"
+#include "ArraySequence.hpp"
+#include "Error.hpp"
+#include <memory>
+#include <cstddef>
+#include <cstdint>
+#include <stdexcept>
+
+template <std::integral T>
+BitSequence<T>::BitSequence(bool* bits, size_t count) 
+    : m_bit_count(count)
+{
+    size_t cells = GetCellsCount();
+    m_data = new DynamicArray<T>(cells);
+    
+    for (size_t i = 0; i < cells; i++) {
+        m_data->Set(i, 0);
+    }
+    
+    for (size_t i = 0; i < count; i++) {
+        if (bits[i]) {
+            SetBit(i, true);
+        }
+    }
+}
+
+template <std::integral T>
+BitSequence<T>::BitSequence(size_t size) 
+    : m_bit_count(size)
+{
+    size_t cells = GetCellsCount();
+    m_data = new DynamicArray<T>(cells);
+    
+    for (size_t i = 0; i < cells; i++) {
+        m_data->Set(i, 0);
+    }
+}
+
+template <std::integral T>
+BitSequence<T>::BitSequence(const BitSequence<T>& other) 
+    : m_bit_count(other.m_bit_count)
+{
+    size_t cells = GetCellsCount();
+    m_data = new DynamicArray<T>(cells);
+    
+    for (size_t i = 0; i < cells; i++) {
+        m_data->Set(i, other.m_data->Get(i));
+    }
+}
+
+template <std::integral T>
+BitSequence<T>::~BitSequence() {
+    delete m_data;
+}
+
+template <std::integral T>
+Bit BitSequence<T>::GetFirst() const {
+    if (m_bit_count == 0) {
+        throw EmptySequenceException("BitSequence пуст");
+    }
+    return Get(0);
+}
+
+template <std::integral T>
+Bit BitSequence<T>::GetLast() const {
+    if (m_bit_count == 0) {
+        throw EmptySequenceException("BitSequence пуст");
+    }
+    return Get(m_bit_count - 1);
+}
+
+template <std::integral T>
+Bit BitSequence<T>::Get(size_t index) const {
+    return Bit(GetBit(index));
+}
+
+template <std::integral T>
+size_t BitSequence<T>::GetLength() const {
+    return m_bit_count;
+}
+
+template <std::integral T>
+Sequence<Bit>* BitSequence<T>::GetSubsequence(size_t start_index, size_t end_index) const {
+    if (start_index > end_index || end_index >= m_bit_count) {
+        throw OutOfRangeException("BitSequence::GetSubsequence: неверные индексы");
+    }
+    
+    size_t new_size = end_index - start_index + 1;
+    bool* temp_bits = new bool[new_size];
+    
+    for (size_t i = 0; i < new_size; i++) {
+        temp_bits[i] = GetBit(start_index + i);
+    }
+    
+    BitSequence<T>* result = new BitSequence<T>(temp_bits, new_size);
+    delete[] temp_bits;
+    
+    return result;
+}
+
+template <std::integral T>
+void BitSequence<T>::Append(Bit temp) {
+    size_t new_size = m_bit_count + 1;
+    size_t old_cells = GetCellsCount();
+    m_bit_count = new_size;
+    size_t new_cells = GetCellsCount();
+    
+    if (new_cells > old_cells) {
+        m_data->Resize(new_cells);
+        m_data->Set(new_cells - 1, 0);
+    }
+    
+    SetBit(m_bit_count - 1, temp.GetValue());
+}
+
+template <std::integral T>
+void BitSequence<T>::Prepend(Bit temp) {
+    InsertAt(temp, 0);
+}
+
+template <std::integral T>
+void BitSequence<T>::InsertAt(Bit temp, size_t index) {
+    if (index > m_bit_count) {
+        throw OutOfRangeException("BitSequence::InsertAt: индекс вне диапазона");
+    }
+    
+    size_t new_size = m_bit_count + 1;
+    size_t old_cells = GetCellsCount();
+    m_bit_count = new_size;
+    size_t new_cells = GetCellsCount();
+    
+    if (new_cells > old_cells) {
+        m_data->Resize(new_cells);
+        m_data->Set(new_cells - 1, 0);
+    }
+    
+    for (size_t i = m_bit_count - 1; i > index; i--) {
+        bool bit = GetBit(i - 1);
+        SetBit(i, bit);
+    }
+    
+    SetBit(index, temp.GetValue());
+}
+
+template <std::integral T>
+Sequence<Bit>* BitSequence<T>::Concat(Sequence<Bit>* other) const {
+    if (other == nullptr) {
+        throw NullPointerException("BitSequence::Concat: нулевой указатель");
+    }
+    
+    size_t total_size = m_bit_count + other->GetLength();
+    bool* temp_bits = new bool[total_size];
+    
+    for (size_t i = 0; i < m_bit_count; i++) {
+        temp_bits[i] = GetBit(i);
+    }
+    
+    for (size_t i = 0; i < other->GetLength(); i++) {
+        temp_bits[m_bit_count + i] = other->Get(i).GetValue();
+    }
+    
+    BitSequence<T>* result = new BitSequence<T>(temp_bits, total_size);
+    delete[] temp_bits;
+    
+    return result;
+}
+
+template <std::integral T>
+Sequence<Bit>* BitSequence<T>::Map(Bit (*func)(Bit)) {
+    BitSequence<T>* result = new BitSequence<T>(m_bit_count);
+    
+    for (size_t i = 0; i < m_bit_count; i++) {
+        Bit transformed = func(Get(i));
+        result->SetBit(i, transformed.GetValue());
+    }
+    
+    return result;
+}
+
+template <std::integral T>
+Sequence<Bit>* BitSequence<T>::Where(bool (*predicate)(Bit)) {
+    size_t count = 0;
+    for (size_t i = 0; i < m_bit_count; i++) {
+        if (predicate(Get(i))) {
+            count++;
+        }
+    }
+    
+    bool* temp_bits = new bool[count];
+    size_t index = 0;
+    
+    for (size_t i = 0; i < m_bit_count; i++) {
+        if (predicate(Get(i))) {
+            temp_bits[index++] = GetBit(i);
+        }
+    }
+    
+    BitSequence<T>* result = new BitSequence<T>(temp_bits, count);
+    delete[] temp_bits;
+    
+    return result;
+}
+
+template <std::integral T>
+Bit BitSequence<T>::Reduce(Bit (*func)(Bit, Bit), Bit initial) {
+    Bit result = initial;
+    
+    for (size_t i = 0; i < m_bit_count; i++) {
+        result = func(result, Get(i));
+    }
+    
+    return result;
+}
+
+template <std::integral T>
+Option<Bit> BitSequence<T>::TryGetFirst(bool (*predicate)(Bit)) const {
+    for (size_t i = 0; i < m_bit_count; i++) {
+        Bit elem = Get(i);
+        if (predicate == nullptr || predicate(elem)) {
+            return Option<Bit>::Some(elem);
+        }
+    }
+    return Option<Bit>::None();
+}
+
+template <std::integral T>
+Option<Bit> BitSequence<T>::TryGetLast(bool (*predicate)(Bit)) const {
+    for (size_t i = m_bit_count; i > 0; i--) {
+        Bit elem = Get(i - 1);
+        if (predicate == nullptr || predicate(elem)) {
+            return Option<Bit>::Some(elem);
+        }
+    }
+    return Option<Bit>::None();
+}
+
+template <std::integral T>
+void BitSequence<T>::SetBit(size_t index, bool value) {
+    if (index >= m_bit_count) {
+        throw OutOfRangeException("BitSequence::SetBit: индекс вне диапазона");
+    }
+    
+    size_t cell = GetCellIndex(index);
+    size_t offset = GetBitOffset(index);
+    T word = m_data->Get(cell);
+    
+    if (value) {
+        word |= (static_cast<T>(1) << offset);
+    } else {
+        word &= ~(static_cast<T>(1) << offset);
+    }
+    
+    m_data->Set(cell, word);
+}
+
+template <std::integral T>
+bool BitSequence<T>::GetBit(size_t index) const {
+    if (index >= m_bit_count) {
+        throw OutOfRangeException("BitSequence::GetBit: индекс вне диапазона");
+    }
+    
+    size_t cell = GetCellIndex(index);
+    size_t offset = GetBitOffset(index);
+    T word = m_data->Get(cell);
+    
+    return (word >> offset) & 1;
+}
+
+template <std::integral T>
+std::unique_ptr<BitSequence<T>> BitSequence<T>::And(const BitSequence<T>& other) const {
+    if (m_bit_count != other.m_bit_count) {
+        throw LengthMismatchException("BitSequence::And: длины не совпадают");
+    }
+    
+    auto result = std::make_unique<BitSequence<T>>(m_bit_count);
+    size_t cells = GetCellsCount();
+    
+    for (size_t i = 0; i < cells; i++) {
+        T val = m_data->Get(i) & other.m_data->Get(i);
+        result->m_data->Set(i, val);
+    }
+    
+    result->ClearUnusedBits();
+    return result;
+}
+
+template <std::integral T>
+std::unique_ptr<BitSequence<T>> BitSequence<T>::Or(const BitSequence<T>& other) const {
+    if (m_bit_count != other.m_bit_count) {
+        throw LengthMismatchException("BitSequence::Or: длины не совпадают");
+    }
+    
+    auto result = std::make_unique<BitSequence<T>>(m_bit_count);
+    size_t cells = GetCellsCount();
+    
+    for (size_t i = 0; i < cells; i++) {
+        T val = m_data->Get(i) | other.m_data->Get(i);
+        result->m_data->Set(i, val);
+    }
+    
+    result->ClearUnusedBits();
+    return result;
+}
+
+template <std::integral T>
+std::unique_ptr<BitSequence<T>> BitSequence<T>::Xor(const BitSequence<T>& other) const {
+    if (m_bit_count != other.m_bit_count) {
+        throw LengthMismatchException("BitSequence::Xor: длины не совпадают");
+    }
+    
+    auto result = std::make_unique<BitSequence<T>>(m_bit_count);
+    size_t cells = GetCellsCount();
+    
+    for (size_t i = 0; i < cells; i++) {
+        T val = m_data->Get(i) ^ other.m_data->Get(i);
+        result->m_data->Set(i, val);
+    }
+    
+    result->ClearUnusedBits();
+    return result;
+}
+
+template <std::integral T>
+std::unique_ptr<BitSequence<T>> BitSequence<T>::Not() const {
+    auto result = std::make_unique<BitSequence<T>>(m_bit_count);
+    size_t cells = GetCellsCount();
+    
+    for (size_t i = 0; i < cells; i++) {
+        T val = ~(m_data->Get(i));
+        result->m_data->Set(i, val);
+    }
+    
+    result->ClearUnusedBits();
+    return result;
+}
+
+template <std::integral T>
+std::unique_ptr<ArraySequence<Bit>> BitSequence<T>::ToMutable() const {
+    auto result = std::make_unique<ArraySequence<Bit>>();
+    
+    for (size_t i = 0; i < m_bit_count; i++) {
+        result->Append(Bit(GetBit(i)));
+    }
+    
+    return result;
+}
+
+template <std::integral T>
+BitSequence<T> BitSequence<T>::operator&(const BitSequence<T>& other) const {
+    auto result = And(other);
+    return *result;
+}
+
+template <std::integral T>
+BitSequence<T> BitSequence<T>::operator|(const BitSequence<T>& other) const {
+    auto result = Or(other);
+    return *result;
+}
+
+template <std::integral T>
+BitSequence<T> BitSequence<T>::operator^(const BitSequence<T>& other) const {
+    auto result = Xor(other);
+    return *result;
+}
+
+template <std::integral T>
+BitSequence<T> BitSequence<T>::operator~() const {
+    auto result = Not();
+    return *result;
+}
