@@ -82,18 +82,16 @@ size_t BitSequence<T>::GetLength() const {
 template <std::integral T>
 Sequence<Bit>* BitSequence<T>::GetSubsequence(size_t start_index, size_t end_index) const {
     if (start_index > end_index || end_index >= m_bit_count) {
-        throw OutOfRangeException("BitSequence::GetSubsequence: неверные индексы");
+        throw std::out_of_range("BitSequence::GetSubsequence: неверные индексы");
     }
     
     size_t new_size = end_index - start_index + 1;
-    bool* temp_bits = new bool[new_size];
+    BitSequence* result = new BitSequence(new_size);
     
     for (size_t i = 0; i < new_size; i++) {
-        temp_bits[i] = GetBit(start_index + i);
+        bool bit_value = GetBit(start_index + i);
+        result->SetBit(i, bit_value);
     }
-    
-    BitSequence<T>* result = new BitSequence<T>(temp_bits, new_size);
-    delete[] temp_bits;
     
     return result;
 }
@@ -145,22 +143,18 @@ void BitSequence<T>::InsertAt(Bit temp, size_t index) {
 template <std::integral T>
 Sequence<Bit>* BitSequence<T>::Concat(Sequence<Bit>* other) const {
     if (other == nullptr) {
-        throw NullPointerException("BitSequence::Concat: нулевой указатель");
+        throw std::invalid_argument("BitSequence::Concat: нулевой указатель");
     }
     
     size_t total_size = m_bit_count + other->GetLength();
-    bool* temp_bits = new bool[total_size];
-    
+    BitSequence* result = new BitSequence(total_size);
     for (size_t i = 0; i < m_bit_count; i++) {
-        temp_bits[i] = GetBit(i);
+        result->SetBit(i, GetBit(i));
     }
-    
     for (size_t i = 0; i < other->GetLength(); i++) {
-        temp_bits[m_bit_count + i] = other->Get(i).GetValue();
+        bool bit_value = other->Get(i).GetValue();
+        result->SetBit(m_bit_count + i, bit_value);
     }
-    
-    BitSequence<T>* result = new BitSequence<T>(temp_bits, total_size);
-    delete[] temp_bits;
     
     return result;
 }
@@ -179,6 +173,7 @@ Sequence<Bit>* BitSequence<T>::Map(Bit (*func)(Bit)) {
 
 template <std::integral T>
 Sequence<Bit>* BitSequence<T>::Where(bool (*predicate)(Bit)) {
+    // Сначала считаем количество подходящих элементов
     size_t count = 0;
     for (size_t i = 0; i < m_bit_count; i++) {
         if (predicate(Get(i))) {
@@ -186,17 +181,15 @@ Sequence<Bit>* BitSequence<T>::Where(bool (*predicate)(Bit)) {
         }
     }
     
-    bool* temp_bits = new bool[count];
-    size_t index = 0;
+    // Создаём результат и сразу заполняем
+    BitSequence* result = new BitSequence(count);
+    size_t result_index = 0;
     
     for (size_t i = 0; i < m_bit_count; i++) {
         if (predicate(Get(i))) {
-            temp_bits[index++] = GetBit(i);
+            result->SetBit(result_index++, GetBit(i));
         }
     }
-    
-    BitSequence<T>* result = new BitSequence<T>(temp_bits, count);
-    delete[] temp_bits;
     
     return result;
 }

@@ -32,37 +32,35 @@ void ImmutableArraySequence<T>::InsertAt(T temp, size_t index) {
 template<class T>
 std::unique_ptr<ImmutableArraySequence<T>> ImmutableArraySequence<T>::WithAppend(T item) const {
     size_t old_size = this->GetLength();
-    T* new_data = new T[old_size + 1];
-
-    for(size_t i = 0; i < old_size; i++){
-        new_data[i] = this->Get(i);
+    auto result = std::make_unique<ImmutableArraySequence<T>>(old_size + 1);
+    
+    for (size_t i = 0; i < old_size; i++) {
+        result->Set(i, this->Get(i));
     }
-
-    new_data[old_size] = item; 
-    auto result = std::make_unique<ImmutableArraySequence<T>>(new_data, old_size + 1); 
-
-    delete[] new_data;
+    result->Set(old_size, item);
+    
     return result;
-}   
+}
 
 template<class T>
 std::unique_ptr<ImmutableArraySequence<T>> ImmutableArraySequence<T>::WithInsertAt(T item, size_t index) const {
-    size_t old_size = this->GetLength();
-    T* new_data = new T[old_size + 1]; 
-
-    for (size_t i = 0; i < index; i++) {
-        new_data[i] = this->Get(i);
+    if (index > this->GetLength()) {
+        throw std::out_of_range("Индекс вне диапазона");
     }
     
-    new_data[index] = item;
+    size_t old_size = this->GetLength();
+    auto result = std::make_unique<ImmutableArraySequence<T>>(old_size + 1);
+    
+    for (size_t i = 0; i < index; i++) {
+        result->Set(i, this->Get(i));
+    }
+    
+    result->Set(index, item);
     
     for (size_t i = index; i < old_size; i++) {
-        new_data[i + 1] = this->Get(i); 
+        result->Set(i + 1, this->Get(i));
     }
     
-    auto result = std::make_unique<ImmutableArraySequence<T>>(new_data, old_size + 1);
-    
-    delete[] new_data;
     return result;
 }
 
@@ -76,20 +74,16 @@ std::unique_ptr<Sequence<T>> ImmutableArraySequence<T>::Concat(Sequence<T>* othe
     size_t this_size = this->GetLength();
     size_t other_size = other->GetLength();
     size_t new_size = this_size + other_size;
-
-    T* new_data = new T[new_size];
+    
+    auto result = std::make_unique<ImmutableArraySequence<T>>(new_size);
     
     for (size_t i = 0; i < this_size; i++) {
-        new_data[i] = this->Get(i);
+        result->Set(i, this->Get(i));
     }
     
     for (size_t i = 0; i < other_size; i++) {
-        new_data[this_size + i] = other->Get(i);
+        result->Set(this_size + i, other->Get(i));
     }
-    
-    auto result = std::make_unique<ImmutableArraySequence<T>>(new_data, new_size);
-    
-    delete[] new_data;
     
     return result;
 }
@@ -97,16 +91,21 @@ std::unique_ptr<Sequence<T>> ImmutableArraySequence<T>::Concat(Sequence<T>* othe
 template<class T>
 std::unique_ptr<ArraySequence<T>> ImmutableArraySequence<T>::ToMutable() const {
     size_t size = this->GetLength();
-    T* dataCopy = new T[size];
+    auto result = std::make_unique<ArraySequence<T>>();
     
     for (size_t i = 0; i < size; i++) {
-        dataCopy[i] = this->Get(i);
+        result->Append(this->Get(i));
     }
     
-    auto result = std::make_unique<ArraySequence<T>>(dataCopy, size);
-    delete[] dataCopy;
     return result;
 }
+
+template<class T>
+std::unique_ptr<ImmutableArraySequence<T>> ImmutableArraySequence<T>::WithPrepend(T item) const {
+    return WithInsertAt(item, 0);
+}
+
+
 
 template<class T>
 Iterator<T> ImmutableArraySequence<T>::begin() {

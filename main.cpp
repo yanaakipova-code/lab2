@@ -7,7 +7,7 @@ using namespace std;
 
 ArraySequence<int>* g_array_seq = nullptr;
 ListSequence<int>* g_list_seq = nullptr;
-BitSequence* g_bit_seq = nullptr;
+BitSequence<uint16_t>* g_bit_seq = nullptr;
 int g_current_type = 0;
 
 void DrawUI();
@@ -31,7 +31,7 @@ int main() {
     
     g_array_seq = new ArraySequence<int>();
     g_list_seq = new ListSequence<int>();
-    g_bit_seq = new BitSequence(0);
+    g_bit_seq = new BitSequence<uint16_t>(0);
     
     g_array_seq->Append(1);
     g_array_seq->Append(2);
