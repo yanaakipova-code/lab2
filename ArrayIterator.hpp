@@ -24,9 +24,9 @@ public:
     }
     
     bool operator==(const Iterator<T>& other) const override {
-        const ArrayIterator* otherArr = dynamic_cast<const ArrayIterator*>(&other);
-        if (!otherArr) return false;
-        return m_ptr == otherArr->m_ptr;
+        const ArrayIterator* other_arr = dynamic_cast<const ArrayIterator*>(&other);
+        if (!other_arr) return false;
+        return m_ptr == other_arr->m_ptr;
     }
     
     bool operator!=(const Iterator<T>& other) const override {
@@ -60,9 +60,9 @@ public:
     }
     
     bool operator==(const ConstIterator<T>& other) const override {
-        const ConstArrayIterator* otherArr = dynamic_cast<const ConstArrayIterator*>(&other);
-        if (!otherArr) return false;
-        return m_ptr == otherArr->m_ptr;
+        const ConstArrayIterator* other_arr = dynamic_cast<const ConstArrayIterator*>(&other);
+        if (!other_arr) return false;
+        return m_ptr == other_arr->m_ptr;
     }
     
     bool operator!=(const ConstIterator<T>& other) const override {
