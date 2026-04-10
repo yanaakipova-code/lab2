@@ -14,19 +14,22 @@
 template <std::integral T>
 class BitSequence : public Sequence<Bit> {
 private:
-    DynamicArray<T>* m_data;
-    size_t m_bit_count;
+    DynamicArray<T>* m_data; //указатель на конкретную ячейку
+    size_t m_bit_count;// сколько всего битов 
     
     static constexpr size_t BITS_PER_CELL = sizeof(T) * 8;
     
+    //номер ячейки
     size_t GetCellIndex(size_t bit_index) const {
         return bit_index / BITS_PER_CELL;
     }
     
+    //позиция внутри ячейки 
     size_t GetBitOffset(size_t bit_index) const {
         return bit_index % BITS_PER_CELL;
     }
     
+    //сколько ячеек надо
     size_t GetCellsCount() const {
         return (m_bit_count + BITS_PER_CELL - 1) / BITS_PER_CELL;
     }

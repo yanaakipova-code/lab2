@@ -143,7 +143,7 @@ void BitSequence<T>::InsertAt(Bit temp, size_t index) {
 template <std::integral T>
 Sequence<Bit>* BitSequence<T>::Concat(Sequence<Bit>* other) const {
     if (other == nullptr) {
-        throw std::invalid_argument("BitSequence::Concat: нулевой указатель");
+        throw InvalidArgumentException("BitSequence::Concat: нулевой указатель");
     }
     
     size_t total_size = m_bit_count + other->GetLength();
@@ -173,7 +173,7 @@ Sequence<Bit>* BitSequence<T>::Map(Bit (*func)(Bit)) {
 
 template <std::integral T>
 Sequence<Bit>* BitSequence<T>::Where(bool (*predicate)(Bit)) {
-    // Сначала считаем количество подходящих элементов
+    //считаем количество подходящих элементов
     size_t count = 0;
     for (size_t i = 0; i < m_bit_count; i++) {
         if (predicate(Get(i))) {
@@ -181,7 +181,7 @@ Sequence<Bit>* BitSequence<T>::Where(bool (*predicate)(Bit)) {
         }
     }
     
-    // Создаём результат и сразу заполняем
+    //создаём результат и сразу заполняем
     BitSequence* result = new BitSequence(count);
     size_t result_index = 0;
     
@@ -375,8 +375,6 @@ const Bit& BitSequence<T>::operator[](size_t index) const {
     static Bit dummy;
     return dummy;
 }
-
-// ============ ИТЕРАТОРЫ - ЗАГЛУШКИ ============
 
 template <std::integral T>
 std::unique_ptr<Iterator<Bit>> BitSequence<T>::begin() {
