@@ -104,10 +104,11 @@ Sequence<T>* ListSequence<T>::Concat(Sequence<T>* other) const {
 template<class T>
 Sequence<T>* ListSequence<T>::Map(T (*func)(T)) {
     ListSequence<T>* result = new ListSequence<T>();
-    auto it = begin();
-    auto endIt = end();
     
-    while (*it != *endIt) {
+    auto it = begin();
+    auto end_it = end();
+    
+    while (*it != *end_it) {
         result->Append(func(**it));
         ++(*it);
     }
@@ -118,10 +119,11 @@ Sequence<T>* ListSequence<T>::Map(T (*func)(T)) {
 template<class T>
 Sequence<T>* ListSequence<T>::Where(bool (*predicate)(T)) {
     ListSequence<T>* result = new ListSequence<T>();
-    auto it = begin();
-    auto endIt = end();
     
-    while (*it != *endIt) {
+    auto it = begin();
+    auto end_it = end();
+    
+    while (*it != *end_it) {
         T elem = **it;
         if (predicate(elem)) {
             result->Append(elem);
@@ -135,10 +137,11 @@ Sequence<T>* ListSequence<T>::Where(bool (*predicate)(T)) {
 template<class T>
 T ListSequence<T>::Reduce(T (*func)(T, T), T initial) {
     T result = initial;
-    auto it = begin();
-    auto endIt = end();
     
-    while (*it != *endIt) {
+    auto it = begin();
+    auto end_it = end();
+    
+    while (*it != *end_it) {
         result = func(result, **it);
         ++(*it);
     }
@@ -149,9 +152,9 @@ T ListSequence<T>::Reduce(T (*func)(T, T), T initial) {
 template<class T>
 Option<T> ListSequence<T>::TryGetFirst(bool (*predicate)(T)) const {
     auto it = begin();
-    auto endIt = end();
+    auto end_it = end();
     
-    while (*it != *endIt) {
+    while (*it != *end_it) {
         T elem = **it;
         if (predicate == nullptr || predicate(elem)) {
             return Option<T>::Some(elem);

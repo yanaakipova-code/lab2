@@ -208,13 +208,3 @@ template<class T>
 std::unique_ptr<ConstIterator<T>> ArraySequence<T>::end() const {
     return std::make_unique<ConstArrayIterator<T>>(m_items->GetData() + m_items->GetSize());
 }
-
-template<class T>
-std::unique_ptr<ConstIterator<T>> ArraySequence<T>::cbegin() const {
-    return std::make_unique<ConstArrayIterator<T>>(m_items->GetData());
-}
-
-template<class T>
-std::unique_ptr<ConstIterator<T>> ArraySequence<T>::cend() const {
-    return std::make_unique<ConstArrayIterator<T>>(m_items->GetData() + m_items->GetSize());
-}
