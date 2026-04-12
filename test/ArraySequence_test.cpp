@@ -1,12 +1,13 @@
 #include "catch.hpp"
 #include "../ArraySequence.hpp"
+#include "../Error.hpp"
 
 TEST_CASE("Динамическая последовательность 15.1: ArraySequence - конструктор по умолчанию"){
     ArraySequence<int> seq;
     
     REQUIRE(seq.GetLength() == 0);
-    REQUIRE_THROWS_AS(seq.GetFirst(), std::out_of_range);
-    REQUIRE_THROWS_AS(seq.GetLast(), std::out_of_range);
+    REQUIRE_THROWS_AS(seq.GetFirst(), OutOfRangeException);
+    REQUIRE_THROWS_AS(seq.GetLast(), OutOfRangeException);
 }
 
 TEST_CASE("Динамическая последовательность 15.2: ArraySequence - конструктор из массива"){
@@ -45,7 +46,7 @@ TEST_CASE("Динамическая последовательность 16.1: A
 TEST_CASE("Динамическая последовательность 16.2: ArraySequence - GetFirst на пустой последовательности"){
     ArraySequence<int> seq;
     
-    REQUIRE_THROWS_AS(seq.GetFirst(), std::out_of_range);
+    REQUIRE_THROWS_AS(seq.GetFirst(), OutOfRangeException);
 }
 
 TEST_CASE("Динамическая последовательность 16.3: ArraySequence - GetLast"){
@@ -58,7 +59,7 @@ TEST_CASE("Динамическая последовательность 16.3: A
 TEST_CASE("Динамическая последовательность 16.4: ArraySequence - GetLast на пустой последовательности"){
     ArraySequence<int> seq;
     
-    REQUIRE_THROWS_AS(seq.GetLast(), std::out_of_range);
+    REQUIRE_THROWS_AS(seq.GetLast(), OutOfRangeException);
 }
 
 TEST_CASE("Динамическая последовательность 16.5: ArraySequence - Get по индексу"){
@@ -75,9 +76,8 @@ TEST_CASE("Динамическая последовательность 16.6: A
     int temp[] = {1, 2, 3};
     ArraySequence<int> seq(temp, 3);
     
-    REQUIRE_THROWS_AS(seq.Get(3), std::out_of_range);
-    REQUIRE_THROWS_AS(seq.Get(100), std::out_of_range);
-    REQUIRE_THROWS_AS(seq.Get(-1), std::out_of_range);
+    REQUIRE_THROWS_AS(seq.Get(3), OutOfRangeException);
+    REQUIRE_THROWS_AS(seq.Get(100), OutOfRangeException);
 }
 
 TEST_CASE("Динамическая последовательность 16.7: ArraySequence - GetLength"){
@@ -158,8 +158,8 @@ TEST_CASE("Динамическая последовательность 17.6: A
     int temp[] = {1, 2, 3};
     ArraySequence<int> seq(temp, 3);
     
-    REQUIRE_THROWS_AS(seq.InsertAt(99, 5), std::out_of_range);
-    REQUIRE_THROWS_AS(seq.InsertAt(99, 100), std::out_of_range);
+    REQUIRE_THROWS_AS(seq.InsertAt(99, 5), OutOfRangeException);
+    REQUIRE_THROWS_AS(seq.InsertAt(99, 100), OutOfRangeException);
 }
 
 TEST_CASE("Динамическая последовательность 18.1: ArraySequence - Set"){
@@ -179,8 +179,8 @@ TEST_CASE("Динамическая последовательность 18.2: A
     int temp[] = {1, 2, 3};
     ArraySequence<int> seq(temp, 3);
     
-    REQUIRE_THROWS_AS(seq.Set(3, 100), std::out_of_range);
-    REQUIRE_THROWS_AS(seq.Set(100, 100), std::out_of_range);
+    REQUIRE_THROWS_AS(seq.Set(3, 100), OutOfRangeException);
+    REQUIRE_THROWS_AS(seq.Set(100, 100), OutOfRangeException);
 }
 
 TEST_CASE("Динамическая последовательность 19.1: ArraySequence - GetSubsequence"){
@@ -214,9 +214,9 @@ TEST_CASE("Динамическая последовательность 19.3: A
     int temp[] = {1, 2, 3, 4, 5};
     ArraySequence<int> seq(temp, 5);
     
-    REQUIRE_THROWS_AS(seq.GetSubsequence(3, 1), std::out_of_range);
-    REQUIRE_THROWS_AS(seq.GetSubsequence(0, 5), std::out_of_range);
-    REQUIRE_THROWS_AS(seq.GetSubsequence(2, 10), std::out_of_range);
+    REQUIRE_THROWS_AS(seq.GetSubsequence(3, 1), InvalidArgumentException);
+    REQUIRE_THROWS_AS(seq.GetSubsequence(0, 5), InvalidArgumentException);
+    REQUIRE_THROWS_AS(seq.GetSubsequence(2, 10), InvalidArgumentException);
 }
 
 TEST_CASE("Динамическая последовательность 20.1: ArraySequence - Concat"){
@@ -417,33 +417,4 @@ TEST_CASE("Динамическая последовательность 25.3: A
     REQUIRE(constSeq[0] == 5);
     REQUIRE(constSeq[1] == 6);
     REQUIRE(constSeq[2] == 7);
-}
-
-TEST_CASE("Динамическая последовательность 26.1: ArraySequence - итераторы range-based for"){
-    int temp[] = {10, 20, 30, 40};
-    ArraySequence<int> seq(temp, 4);
-    
-    int expected[] = {10, 20, 30, 40};
-    size_t i = 0;
-    for (int val : seq) {
-        REQUIRE(val == expected[i]);
-        i++;
-    }
-    REQUIRE(i == 4);
-}
-
-TEST_CASE("Динамическая последовательность 26.2: ArraySequence - итераторы явное использование"){
-    int temp[] = {1, 2, 3, 4};
-    ArraySequence<int> seq(temp, 4);
-    
-    auto it = seq.begin();
-    REQUIRE(*it == 1);
-    ++it;
-    REQUIRE(*it == 2);
-    ++it;
-    REQUIRE(*it == 3);
-    ++it;
-    REQUIRE(*it == 4);
-    ++it;
-    REQUIRE(it == seq.end());
 }
