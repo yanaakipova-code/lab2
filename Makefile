@@ -1,18 +1,19 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++20 -mwindows -g
+CXXFLAGS = -Wall -Wextra -std=c++20 -g -I"C:/PDCurses-3.9" -mwindows
+LDFLAGS = -L"C:/PDCurses-3.9/wincon" -l:pdcurses.a
 
-TARGET = lab_GUI.exe
-SOURCES = main_gui.cpp
+TARGET = curses_program.exe
+SOURCES = main_curses.cpp
 
 all: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES) $(LDFLAGS)
 
-clean:
-	del $(TARGET) 2>nul
-
 run: $(TARGET)
 	$(TARGET)
 
-.PHONY: all clean run
+clean:
+	del $(TARGET) 2>nul
+
+.PHONY: all run clean
