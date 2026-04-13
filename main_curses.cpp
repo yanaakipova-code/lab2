@@ -10,7 +10,7 @@ using namespace std;
 ArraySequence<int>* g_array_seq = nullptr;
 ListSequence<int>* g_list_seq = nullptr;
 BitSequence<uint32_t>* g_bit_seq = nullptr;
-int g_current_type = 0; // 0 - Array, 1 - List, 2 - Bit
+int g_current_type = 0;
 
 string GetCurrentTypeName() {
     if (g_current_type == 0) return "ArraySequence";
