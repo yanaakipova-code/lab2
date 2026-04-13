@@ -17,6 +17,7 @@ public:
     ArraySequence(T* temp, size_t count);
     ArraySequence();
     ArraySequence(const ArraySequence<T>& array_sequence);
+    ArraySequence(std::initializer_list<T> array_sequence);
     ~ArraySequence() override;
 
     T GetFirst() const override;

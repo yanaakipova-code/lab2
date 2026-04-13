@@ -24,6 +24,14 @@ ArraySequence<T>::ArraySequence(const ArraySequence<T>& array_sequence){
 }
 
 template<class T>
+ArraySequence<T>::ArraySequence(std::initializer_list<T> init) {
+    m_items = new DynamicArray<T>(0);
+    for (const T& value : init) {
+        Append(value);
+    }
+}
+
+template<class T>
 ArraySequence<T>::~ArraySequence(){
     delete m_items;
 }
