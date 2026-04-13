@@ -1,8 +1,7 @@
 #pragma once
-#include <memory>
 #include <iterator>
 
-template<class T>
+template<class T, template<typename> class Derived>
 class Iterator {
 public:
     using iterator_category = std::forward_iterator_tag;
@@ -11,17 +10,38 @@ public:
     using pointer = T*;
     using reference = T&;
 
-    virtual ~Iterator() = default;
+    reference operator*() {
+        return derived().operator*();
+    }
     
-    virtual reference operator*() = 0;
-    virtual pointer operator->() = 0;
-    virtual Iterator& operator++() = 0;
-    virtual bool operator==(const Iterator& other) const = 0;
-    virtual bool operator!=(const Iterator& other) const = 0;
-    virtual std::unique_ptr<Iterator<T>> clone() const = 0;
+    pointer operator->() {
+        return derived().operator->();
+    }
+    
+    Iterator& operator++() {
+        derived().operator++();
+        return *this;
+    }
+    
+    bool operator==(const Iterator& other) const {
+        return derived().operator==(other.derived());
+    }
+    
+    bool operator!=(const Iterator& other) const {
+        return derived().operator!=(other.derived());
+    }
+    
+private:
+    Derived<T>& derived() {
+        return static_cast<Derived<T>&>(*this);
+    }
+    
+    const Derived<T>& derived() const {
+        return static_cast<const Derived<T>&>(*this);
+    }
 };
 
-template<class T>
+template<class T, template<typename> class Derived>
 class ConstIterator {
 public:
     using iterator_category = std::forward_iterator_tag;
@@ -30,12 +50,33 @@ public:
     using pointer = const T*;
     using reference = const T&;
 
-    virtual ~ConstIterator() = default;
+    reference operator*() const {
+        return derived().operator*();
+    }
     
-    virtual reference operator*() const = 0;
-    virtual pointer operator->() const = 0;
-    virtual ConstIterator& operator++() = 0;
-    virtual bool operator==(const ConstIterator& other) const = 0;
-    virtual bool operator!=(const ConstIterator& other) const = 0;
-    virtual std::unique_ptr<ConstIterator<T>> clone() const = 0;
+    pointer operator->() const {
+        return derived().operator->();
+    }
+    
+    ConstIterator& operator++() {
+        derived().operator++();
+        return *this;
+    }
+    
+    bool operator==(const ConstIterator& other) const {
+        return derived().operator==(other.derived());
+    }
+    
+    bool operator!=(const ConstIterator& other) const {
+        return derived().operator!=(other.derived());
+    }
+    
+private:
+    const Derived<T>& derived() const {
+        return static_cast<const Derived<T>&>(*this);
+    }
+    
+    Derived<T>& derived() {
+        return static_cast<Derived<T>&>(*this);
+    }
 };

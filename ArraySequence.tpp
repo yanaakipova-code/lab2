@@ -184,39 +184,37 @@ const T& ArraySequence<T>::operator[](size_t index) const {
 
 
 template<class T>
-std::unique_ptr<Iterator<T>> ArraySequence<T>::begin() {
+ArrayIterator<T> ArraySequence<T>::begin() {
     if (m_items->GetSize() == 0) {
-        return std::make_unique<ArrayIterator<T>>(nullptr);
+        return ArrayIterator<T>(nullptr);
     }
-    return std::make_unique<ArrayIterator<T>>(m_items->GetData());
+    return ArrayIterator<T>(m_items->GetData());
 }
 
 template<class T>
-std::unique_ptr<Iterator<T>> ArraySequence<T>::end() {
-    return std::make_unique<ArrayIterator<T>>(m_items->GetData() + m_items->GetSize());
+ArrayIterator<T> ArraySequence<T>::end() {
+    return ArrayIterator<T>(m_items->GetData() + m_items->GetSize());
 }
 
 template<class T>
-std::unique_ptr<ConstIterator<T>> ArraySequence<T>::begin() const {
+ConstArrayIterator<T> ArraySequence<T>::begin() const {
     if (m_items->GetSize() == 0) {
-        return std::make_unique<ConstArrayIterator<T>>(nullptr);
+        return ConstArrayIterator<T>(nullptr);
     }
-    return std::make_unique<ConstArrayIterator<T>>(m_items->GetData());
+    return ConstArrayIterator<T>(m_items->GetData());
 }
 
 template<class T>
-std::unique_ptr<ConstIterator<T>> ArraySequence<T>::end() const {
-    return std::make_unique<ConstArrayIterator<T>>(m_items->GetData() + m_items->GetSize());
-}
-template<class T>
-std::unique_ptr<ConstIterator<T>> ArraySequence<T>::cbegin() const {
-    if (m_items->GetSize() == 0) {
-        return std::make_unique<ConstArrayIterator<T>>(nullptr);
-    }
-    return std::make_unique<ConstArrayIterator<T>>(m_items->GetData());
+ConstArrayIterator<T> ArraySequence<T>::end() const {
+    return ConstArrayIterator<T>(m_items->GetData() + m_items->GetSize());
 }
 
 template<class T>
-std::unique_ptr<ConstIterator<T>> ArraySequence<T>::cend() const {
-    return std::make_unique<ConstArrayIterator<T>>(m_items->GetData() + m_items->GetSize());
+ConstArrayIterator<T> ArraySequence<T>::cbegin() const {
+    return ConstArrayIterator<T>(m_items->GetData());
+}
+
+template<class T>
+ConstArrayIterator<T> ArraySequence<T>::cend() const {
+    return ConstArrayIterator<T>(m_items->GetData() + m_items->GetSize());
 }

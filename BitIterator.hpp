@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include "Iterator.hpp"
 #include "Bit.hpp"
 
@@ -7,7 +6,7 @@ template<std::integral T>
 class BitSequence;
 
 template<std::integral T>
-class BitIterator : public Iterator<Bit> {
+class BitIterator : public Iterator<Bit<T>, BitIterator> {
 private:
     const BitSequence<T>* m_sequence;
     size_t m_index;
@@ -16,44 +15,39 @@ public:
     BitIterator(const BitSequence<T>* seq = nullptr, size_t index = 0) 
         : m_sequence(seq), m_index(index) {}
     
-    typename Iterator<Bit>::reference operator*() override {
-        static Bit bit;
+    Bit<T> operator*() {
         if (m_sequence && m_index < m_sequence->GetLength()) {
-            bit = m_sequence->Get(m_index);
+            bool bit_value = m_sequence->GetBit(m_index);
+            return Bit<T>(bit_value);
         }
-        return bit;
+        return Bit<T>(false);
     }
     
-    typename Iterator<Bit>::pointer operator->() override {
-        static Bit bit;
+    Bit<T>* operator->() {
+        static Bit<T> bit;
         if (m_sequence && m_index < m_sequence->GetLength()) {
-            bit = m_sequence->Get(m_index);
+            bool bit_value = m_sequence->GetBit(m_index);
+            bit = Bit<T>(bit_value);
         }
         return &bit;
     }
     
-    Iterator<Bit>& operator++() override {
+    BitIterator& operator++() {
         ++m_index;
         return *this;
     }
     
-    bool operator==(const Iterator<Bit>& other) const override {
-        const BitIterator* other_bit = dynamic_cast<const BitIterator*>(&other);
-        if (!other_bit) return false;
-        return m_sequence == other_bit->m_sequence && m_index == other_bit->m_index;
+    bool operator==(const BitIterator& other) const {
+        return m_sequence == other.m_sequence && m_index == other.m_index;
     }
     
-    bool operator!=(const Iterator<Bit>& other) const override {
+    bool operator!=(const BitIterator& other) const {
         return !(*this == other);
-    }
-    
-    std::unique_ptr<Iterator<Bit>> clone() const override {
-        return std::make_unique<BitIterator<T>>(m_sequence, m_index);
     }
 };
 
 template<std::integral T>
-class ConstBitIterator : public ConstIterator<Bit> {
+class ConstBitIterator : public ConstIterator<Bit<T>, ConstBitIterator> {
 private:
     const BitSequence<T>* m_sequence;
     size_t m_index;
@@ -62,38 +56,33 @@ public:
     ConstBitIterator(const BitSequence<T>* seq = nullptr, size_t index = 0) 
         : m_sequence(seq), m_index(index) {}
     
-    typename ConstIterator<Bit>::reference operator*() const override {
-        static Bit bit;
+    Bit<T> operator*() const {
         if (m_sequence && m_index < m_sequence->GetLength()) {
-            bit = m_sequence->Get(m_index);
+            bool bit_value = m_sequence->GetBit(m_index);
+            return Bit<T>(bit_value);
         }
-        return bit;
+        return Bit<T>(false);
     }
     
-    typename ConstIterator<Bit>::pointer operator->() const override {
-        static Bit bit;
+    const Bit<T>* operator->() const {
+        static Bit<T> bit;
         if (m_sequence && m_index < m_sequence->GetLength()) {
-            bit = m_sequence->Get(m_index);
+            bool bit_value = m_sequence->GetBit(m_index);
+            bit = Bit<T>(bit_value);
         }
         return &bit;
     }
     
-    ConstIterator<Bit>& operator++() override {
+    ConstBitIterator& operator++() {
         ++m_index;
         return *this;
     }
     
-    bool operator==(const ConstIterator<Bit>& other) const override {
-        const ConstBitIterator* other_bit = dynamic_cast<const ConstBitIterator*>(&other);
-        if (!other_bit) return false;
-        return m_sequence == other_bit->m_sequence && m_index == other_bit->m_index;
+    bool operator==(const ConstBitIterator& other) const {
+        return m_sequence == other.m_sequence && m_index == other.m_index;
     }
     
-    bool operator!=(const ConstIterator<Bit>& other) const override {
+    bool operator!=(const ConstBitIterator& other) const {
         return !(*this == other);
-    }
-    
-    std::unique_ptr<ConstIterator<Bit>> clone() const override {
-        return std::make_unique<ConstBitIterator<T>>(m_sequence, m_index);
     }
 };

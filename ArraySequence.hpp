@@ -41,12 +41,12 @@ public:
     T& operator[](size_t index);
     const T& operator[](size_t index) const;
 
-    std::unique_ptr<Iterator<T>> begin() override;
-    std::unique_ptr<Iterator<T>> end() override;
-    std::unique_ptr<ConstIterator<T>> begin() const override;
-    std::unique_ptr<ConstIterator<T>> end() const override;
-    std::unique_ptr<ConstIterator<T>> cbegin() const override;
-    std::unique_ptr<ConstIterator<T>> cend() const override;
+    ArrayIterator<T> begin();
+    ArrayIterator<T> end();
+    ConstArrayIterator<T> begin() const ;
+    ConstArrayIterator<T> end() const;
+    ConstArrayIterator<T> cbegin() const;
+    ConstArrayIterator<T> cend() const;
 };
 
 #include "ArraySequence.tpp"

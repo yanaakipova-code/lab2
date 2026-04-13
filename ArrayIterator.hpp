@@ -1,75 +1,62 @@
 #pragma once
-#include <memory>
 #include "Iterator.hpp"
 
 template<class T>
-class ArrayIterator : public Iterator<T> {
+class ArrayIterator : public Iterator<T, ArrayIterator> {
 private:
     T* m_ptr;
     
 public:
     ArrayIterator(T* ptr = nullptr) : m_ptr(ptr) {}
     
-    typename Iterator<T>::reference operator*() override {
+    T& operator*() {
         return *m_ptr;
     }
     
-    typename Iterator<T>::pointer operator->() override {
+    T* operator->() {
         return m_ptr;
     }
     
-    Iterator<T>& operator++() override {
+    ArrayIterator& operator++() {
         ++m_ptr;
         return *this;
     }
     
-    bool operator==(const Iterator<T>& other) const override {
-        const ArrayIterator* other_arr = dynamic_cast<const ArrayIterator*>(&other);
-        if (!other_arr) return false;
-        return m_ptr == other_arr->m_ptr;
+    bool operator==(const ArrayIterator& other) const {
+        return m_ptr == other.m_ptr;
     }
     
-    bool operator!=(const Iterator<T>& other) const override {
+    bool operator!=(const ArrayIterator& other) const {
         return !(*this == other);
-    }
-    
-    std::unique_ptr<Iterator<T>> clone() const override {
-        return std::make_unique<ArrayIterator<T>>(m_ptr);
     }
 };
 
 template<class T>
-class ConstArrayIterator : public ConstIterator<T> {
+class ConstArrayIterator : public ConstIterator<T, ConstArrayIterator> {
 private:
     const T* m_ptr;
     
 public:
     ConstArrayIterator(const T* ptr = nullptr) : m_ptr(ptr) {}
     
-    typename ConstIterator<T>::reference operator*() const override {
+    const T& operator*() const {
         return *m_ptr;
     }
     
-    typename ConstIterator<T>::pointer operator->() const override {
+    const T* operator->() const {
         return m_ptr;
     }
     
-    ConstIterator<T>& operator++() override {
+    ConstArrayIterator& operator++() {
         ++m_ptr;
         return *this;
     }
     
-    bool operator==(const ConstIterator<T>& other) const override {
-        const ConstArrayIterator* other_arr = dynamic_cast<const ConstArrayIterator*>(&other);
-        if (!other_arr) return false;
-        return m_ptr == other_arr->m_ptr;
+    bool operator==(const ConstArrayIterator& other) const {
+        return m_ptr == other.m_ptr;
     }
     
-    bool operator!=(const ConstIterator<T>& other) const override {
+    bool operator!=(const ConstArrayIterator& other) const {
         return !(*this == other);
-    }
-    
-    std::unique_ptr<ConstIterator<T>> clone() const override {
-        return std::make_unique<ConstArrayIterator<T>>(m_ptr);
     }
 };

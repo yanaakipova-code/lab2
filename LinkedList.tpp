@@ -3,6 +3,8 @@
 #include "ListIterator.hpp"
 #include <cstddef>
 #include <stdexcept> 
+
+
 template<class T>
 LinkedList<T>::LinkedList() 
     : m_head(nullptr), m_tail(nullptr), m_size(0){}
@@ -28,6 +30,19 @@ LinkedList<T>::LinkedList (T* items, size_t count)
             m_size++;
         }
 }
+template<class T>
+LinkedList<T>::LinkedList(const LinkedList<T>& l) {
+    for(auto &i: l){
+        Append(i);
+    }
+}
+
+template<class T>
+LinkedList<T>::LinkedList(const std::initializer_list<T>& il) : LinkedList() {
+        for(auto &i: il) {
+            Append(i);
+        }
+    }
 
 template<class T>
 LinkedList<T>::~LinkedList() {

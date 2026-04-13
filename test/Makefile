@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -g -I..
+CXXFLAGS = -std=c++20 -Wall -g -I..
 
 TESTS = test_dynamic.exe test_linkedlist.exe \
 		test_arrayseq.exe test_listseq.exe \
@@ -21,10 +21,10 @@ test_arrayseq.exe: ArraySequence_test.cpp
 test_listseq.exe: ListSequence_test.cpp
 	$(CXX) $(CXXFLAGS) -D CATCH_CONFIG_MAIN $< -o $@
 
-test_bitseq.exe: BitSequence_test.cpp ../BitSequence.cpp
+test_bitseq.exe: BitSequence_test.cpp 
 	$(CXX) $(CXXFLAGS) -D CATCH_CONFIG_MAIN $^ -o $@
 
-test_mapreduce.exe: MapReduce_test.cpp ../BitSequence.cpp
+test_mapreduce.exe: MapReduce_test.cpp
 	$(CXX) $(CXXFLAGS) -D CATCH_CONFIG_MAIN $^ -o $@
 
 run: $(TESTS)

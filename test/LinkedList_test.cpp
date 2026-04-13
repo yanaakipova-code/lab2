@@ -339,3 +339,13 @@ TEST_CASE("Двусвязный список 14.2: Concat с пустым спи
     
     delete result;
 }
+
+TEST_CASE("InitLisr") {
+    LinkedList<int> t = {1,2,3,4,5};
+    
+    REQUIRE(t.Get(0) == 1);
+    REQUIRE(t.Get(1) == 2);
+    REQUIRE(t.Get(2) == 3);
+    REQUIRE(t.Get(3) == 4);
+    REQUIRE(t.Get(4) == 5);
+  }

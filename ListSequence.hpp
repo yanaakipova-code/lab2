@@ -42,12 +42,12 @@ public:
     T& operator[](size_t index);
     const T& operator[](size_t index) const;
 
-    std::unique_ptr<Iterator<T>> begin() override;
-    std::unique_ptr<Iterator<T>> end() override;
-    std::unique_ptr<ConstIterator<T>> begin() const override;
-    std::unique_ptr<ConstIterator<T>> end() const override;
-    std::unique_ptr<ConstIterator<T>> cbegin() const override;
-    std::unique_ptr<ConstIterator<T>> cend() const override;
+    ListIterator<T> begin() override;
+    ListIterator<T> end() override;
+    ConstListIterator<T> begin() const override;
+    ConstListIterator<T> end() const override;
+    ConstListIterator<T> cbegin() const override;
+    ConstListIterator<T> cend() const override;
 };
 
 #include "ListSequence.tpp"

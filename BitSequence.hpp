@@ -9,15 +9,15 @@
 #include "DynamicArray.hpp"
 #include "Bit.hpp"
 #include "Option.hpp"
-#include "Iterator.hpp"
+#include "BitIterator.hpp"
 
 template <std::integral T>
-class BitSequence : public Sequence<Bit<T>> {
+class BitSequence : public Sequence<Bit<T>>{
 private:
-    DynamicArray<T>* m_data; //указатель на конкретную ячейку
-    size_t m_bit_count;// сколько всего битов 
+    DynamicArray<T>* m_data;
+    size_t m_bit_count; 
     
-    static constexpr size_t BITS_PER_CELL = sizeof(T) * 8;
+    static constexpr size_t BITS_PER_CELL = sizeof(T);
     
     //номер ячейки
     size_t GetCellIndex(size_t bit_index) const {
@@ -89,12 +89,12 @@ public:
     Bit<T>& operator[](size_t index);
     const Bit<T>& operator[](size_t index) const;
     
-    std::unique_ptr<Iterator<Bit<T>>> begin() override;
-    std::unique_ptr<Iterator<Bit<T>>> end() override;
-    std::unique_ptr<ConstIterator<Bit<T>>> begin() const override;
-    std::unique_ptr<ConstIterator<Bit<T>>> end() const override;
-    std::unique_ptr<ConstIterator<Bit<T>>> cbegin() const override;
-    std::unique_ptr<ConstIterator<Bit<T>>> cend() const override;
+    BitIterator<T> begin();
+    BitIterator<T> end();
+    ConstBitIterator<T> begin() const;
+    ConstBitIterator<T> end() const;
+    ConstBitIterator<T> cbegin() const;
+    ConstBitIterator<T> cend() const;
 };
 
 #include "BitSequence.tpp"

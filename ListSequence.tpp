@@ -14,16 +14,6 @@ ListSequence<T>::ListSequence(T* items, size_t count){
 }
 
 template<class T>
-LinkedList<T>::LinkedList(const LinkedList<T>& linked_list)
-    : LinkedList() {
-    Node* current = linked_list.m_head;
-    while (current != nullptr) {
-        Append(current->data);
-        current = current->next;
-    }
-}
-
-template<class T>
 ListSequence<T>::ListSequence() {
     m_list = new LinkedList<T>();
 }
@@ -211,31 +201,31 @@ const T& ListSequence<T>::operator[](size_t index) const {
 }
 
 template<class T>
-std::unique_ptr<Iterator<T>> ListSequence<T>::begin() {
-    return std::make_unique<ListIterator<T>>(m_list->GetHead());
+ListIterator<T> ListSequence<T>::begin() {
+    return ListIterator<T>(m_list->GetHead());
 }
 
 template<class T>
-std::unique_ptr<Iterator<T>> ListSequence<T>::end() {
-    return std::make_unique<ListIterator<T>>(nullptr);
+ListIterator<T> ListSequence<T>::end() {
+    return ListIterator<T>(nullptr);
 }
 
 template<class T>
-std::unique_ptr<ConstIterator<T>> ListSequence<T>::begin() const {
-    return std::make_unique<ConstListIterator<T>>(m_list->GetHead());
+ConstListIterator<T> ListSequence<T>::begin() const {
+    return ConstListIterator<T>(m_list->GetHead());
 }
 
 template<class T>
-std::unique_ptr<ConstIterator<T>> ListSequence<T>::end() const {
-    return std::make_unique<ConstListIterator<T>>(nullptr);
+ConstListIterator<T> ListSequence<T>::end() const {
+    return ConstListIterator<T>(nullptr);
 }
 
 template<class T>
-std::unique_ptr<ConstIterator<T>> ListSequence<T>::cbegin() const {
-    return std::make_unique<ConstListIterator<T>>(m_list->GetHead());
+ConstListIterator<T> ListSequence<T>::cbegin() const {
+    return ConstListIterator<T>(m_list->GetHead());
 }
 
 template<class T>
-std::unique_ptr<ConstIterator<T>> ListSequence<T>::cend() const {
-    return std::make_unique<ConstListIterator<T>>(nullptr);
+ConstListIterator<T> ListSequence<T>::cend() const {
+    return ConstListIterator<T>(nullptr);
 }

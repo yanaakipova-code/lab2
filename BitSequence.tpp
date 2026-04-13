@@ -350,37 +350,31 @@ BitSequence<T> BitSequence<T>::operator~() const {
 }
 
 template <std::integral T>
-std::unique_ptr<Iterator<Bit<T>>> BitSequence<T>::begin() {
-    throw std::runtime_error("BitSequence iterators not implemented");
-    return nullptr;
+BitIterator<T> BitSequence<T>::begin() {
+    return BitIterator<T>(this, 0);
 }
 
 template <std::integral T>
-std::unique_ptr<Iterator<Bit<T>>> BitSequence<T>::end() {
-    throw std::runtime_error("BitSequence iterators not implemented");
-    return nullptr;
+BitIterator<T> BitSequence<T>::end() {
+    return BitIterator<T>(this, m_bit_count);
 }
 
 template <std::integral T>
-std::unique_ptr<ConstIterator<Bit<T>>> BitSequence<T>::begin() const {
-    throw std::runtime_error("BitSequence iterators not implemented");
-    return nullptr;
+ConstBitIterator<T> BitSequence<T>::begin() const {
+    return ConstBitIterator<T>(this, 0);
 }
 
 template <std::integral T>
-std::unique_ptr<ConstIterator<Bit<T>>> BitSequence<T>::end() const {
-    throw std::runtime_error("BitSequence iterators not implemented");
-    return nullptr;
+ConstBitIterator<T> BitSequence<T>::end() const {
+    return ConstBitIterator<T>(this, m_bit_count);
 }
 
 template <std::integral T>
-std::unique_ptr<ConstIterator<Bit<T>>> BitSequence<T>::cbegin() const {
-    throw std::runtime_error("BitSequence iterators not implemented");
-    return nullptr;
+ConstBitIterator<T> BitSequence<T>::cbegin() const {
+    return ConstBitIterator<T>(this, 0);
 }
 
 template <std::integral T>
-std::unique_ptr<ConstIterator<Bit<T>>> BitSequence<T>::cend() const {
-    throw std::runtime_error("BitSequence iterators not implemented");
-    return nullptr;
+ConstBitIterator<T> BitSequence<T>::cend() const {
+    return ConstBitIterator<T>(this, m_bit_count);
 }
