@@ -6,8 +6,7 @@
 #include <stdexcept>
 
 template<class T, class U>
-Sequence<U>* MapWithIndex(ArraySequence<T>& seq, U (*func)(const T&,size_t)){
-    size_t len = seq.GetLength();
+Sequence<U>* MapWithIndex(ArraySequence<T>& seq, U (*func)(const T&, size_t)){
     ArraySequence<U>* result = new ArraySequence<U>();
     size_t i = 0;
     for (auto it = seq.begin(); it != seq.end(); ++it, ++i){
@@ -17,8 +16,7 @@ Sequence<U>* MapWithIndex(ArraySequence<T>& seq, U (*func)(const T&,size_t)){
 }
 
 template<class T, class U>
-Sequence<U>* MapWithIndex(ListSequence<T>& seq, U (*func)(const T&,size_t)){
-    size_t len = seq.GetLength();
+Sequence<U>* MapWithIndex(ListSequence<T>& seq, U (*func)(const T&, size_t)){
     ListSequence<U>* result = new ListSequence<U>();
     size_t i = 0;
     for (auto it = seq.begin(); it != seq.end(); ++it, ++i){
@@ -27,7 +25,6 @@ Sequence<U>* MapWithIndex(ListSequence<T>& seq, U (*func)(const T&,size_t)){
     return result;
 }
 
-
 template<class T>
 Sequence<T>* Skip(ArraySequence<T>& seq, size_t n){
     size_t len = seq.GetLength();
@@ -35,6 +32,7 @@ Sequence<T>* Skip(ArraySequence<T>& seq, size_t n){
         return new ArraySequence<T>();
     }
     ArraySequence<T>* result = new ArraySequence<T>();
+    (void)len; // подавляем предупреждение
 
     auto it = seq.begin();
     for(size_t i = 0; i < n; ++i){
@@ -53,7 +51,7 @@ Sequence<T>* Skip(ListSequence<T>& seq, size_t n){
         return new ListSequence<T>();
     }
     ListSequence<T>* result = new ListSequence<T>();
-
+    (void)len;
     auto it = seq.begin();
     for(size_t i = 0; i < n; ++i){
         ++it;

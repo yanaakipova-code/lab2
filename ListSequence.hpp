@@ -18,7 +18,8 @@ public:
     ListSequence(T* items, size_t count);
     ListSequence();
     ListSequence(const ListSequence<T>& other);
-
+    ListSequence(std::initializer_list<T> init);
+    
     ~ListSequence() override;
 
     T GetFirst() const override;
@@ -42,12 +43,12 @@ public:
     T& operator[](size_t index);
     const T& operator[](size_t index) const;
 
-    ListIterator<T> begin() override;
-    ListIterator<T> end() override;
-    ConstListIterator<T> begin() const override;
-    ConstListIterator<T> end() const override;
-    ConstListIterator<T> cbegin() const override;
-    ConstListIterator<T> cend() const override;
+    ListIterator<T> begin();
+    ListIterator<T> end();
+    ConstListIterator<T> begin() const;
+    ConstListIterator<T> end() const;
+    ConstListIterator<T> cbegin() const;
+    ConstListIterator<T> cend() const;
 };
 
 #include "ListSequence.tpp"

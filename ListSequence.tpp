@@ -24,6 +24,14 @@ ListSequence<T>::ListSequence(const ListSequence<T>& other) {
 }
 
 template<class T>
+ListSequence<T>::ListSequence(std::initializer_list<T> init) {
+    m_list = new LinkedList<T>();
+    for (const T& value : init) {
+        m_list->Append(value);
+    }
+}
+
+template<class T>
 ListSequence<T>::~ListSequence() {
     delete m_list;
 }
@@ -105,12 +113,8 @@ template<class T>
 Sequence<T>* ListSequence<T>::Map(T (*func)(T)) {
     ListSequence<T>* result = new ListSequence<T>();
     
-    auto it = begin();
-    auto end_it = end();
-    
-    while (*it != *end_it) {
-        result->Append(func(**it));
-        ++(*it);
+    for (auto it = begin(); it != end(); ++it) {
+        result->Append(func(*it));
     }
     
     return result;
@@ -120,15 +124,11 @@ template<class T>
 Sequence<T>* ListSequence<T>::Where(bool (*predicate)(T)) {
     ListSequence<T>* result = new ListSequence<T>();
     
-    auto it = begin();
-    auto end_it = end();
-    
-    while (*it != *end_it) {
-        T elem = **it;
+    for (auto it = begin(); it != end(); ++it) {
+        T elem = *it;
         if (predicate(elem)) {
             result->Append(elem);
         }
-        ++(*it);
     }
     
     return result;
@@ -138,12 +138,8 @@ template<class T>
 T ListSequence<T>::Reduce(T (*func)(T, T), T initial) {
     T result = initial;
     
-    auto it = begin();
-    auto end_it = end();
-    
-    while (*it != *end_it) {
-        result = func(result, **it);
-        ++(*it);
+    for (auto it = begin(); it != end(); ++it) {
+        result = func(result, *it);
     }
     
     return result;
@@ -151,15 +147,11 @@ T ListSequence<T>::Reduce(T (*func)(T, T), T initial) {
 
 template<class T>
 Option<T> ListSequence<T>::TryGetFirst(bool (*predicate)(T)) const {
-    auto it = begin();
-    auto end_it = end();
-    
-    while (*it != *end_it) {
-        T elem = **it;
+    for (auto it = begin(); it != end(); ++it) {
+        T elem = *it;
         if (predicate == nullptr || predicate(elem)) {
             return Option<T>::Some(elem);
         }
-        ++(*it);
     }
     return Option<T>::None();
 }
@@ -183,9 +175,9 @@ T& ListSequence<T>::operator[](size_t index) {
     }
     auto it = begin();
     for (size_t i = 0; i < index; ++i) {
-        ++(*it);
+        ++it;
     }
-    return **it;
+    return *it;
 }
 
 template<class T>
@@ -195,10 +187,11 @@ const T& ListSequence<T>::operator[](size_t index) const {
     }
     auto it = begin();
     for (size_t i = 0; i < index; ++i) {
-        ++(*it);
+        ++it;
     }
-    return **it;
+    return *it;
 }
+
 
 template<class T>
 ListIterator<T> ListSequence<T>::begin() {

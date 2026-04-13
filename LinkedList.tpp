@@ -31,18 +31,21 @@ LinkedList<T>::LinkedList (T* items, size_t count)
         }
 }
 template<class T>
-LinkedList<T>::LinkedList(const LinkedList<T>& l) {
-    for(auto &i: l){
-        Append(i);
+LinkedList<T>::LinkedList(const std::initializer_list<T>& il) : LinkedList() {
+    for (const auto& value : il) {
+        Append(value);
     }
 }
 
 template<class T>
-LinkedList<T>::LinkedList(const std::initializer_list<T>& il) : LinkedList() {
-        for(auto &i: il) {
-            Append(i);
-        }
+LinkedList<T>::LinkedList(const LinkedList<T>& linked_list)
+    : LinkedList() {
+    Node* current = linked_list.m_head;
+    while (current != nullptr) {
+        Append(current->data);
+        current = current->next;
     }
+}
 
 template<class T>
 LinkedList<T>::~LinkedList() {
