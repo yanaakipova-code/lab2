@@ -26,6 +26,9 @@ public:
     Set<T, Container> Unification(const Set<T, Container>& other) const;
     Set<T, Container> Intersection(const Set<T, Container>& other) const;
     Set<T, Container> Subtraction(const Set<T, Container>& other) const;
+
+    bool CheckSubset(const Set<T, Container>& other) const;
+    bool Сomparison(const Set<T, Container>& other) const;
 };
 
 #include "Set.tpp"

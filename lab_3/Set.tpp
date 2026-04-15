@@ -152,4 +152,22 @@ Set<T, Container> Set<T, Container>::Subtraction(const Set<T, Container>& other)
     return new_set;
 }
 
+template<typename T, template<typename> class Container>
+bool Set<T, Container>::CheckSubset(const Set<T, Container>& other) const{
+    size_t count = 0;
+    for(size_t i = 0; i < other.GetSize(); i++){
+        if(!Contains(other.GetData(i))){
+            return false;
+        }
+    }
+    return true;
+}
+
+template<typename T, template<typename> class Container>
+bool Set<T, Container>::Сomparison(const Set<T, Container>& other) const{
+    if(GetSize() == other.GetSize() &? CheckSubset(other)){
+        return true;
+    }
+    return false;
+}
 
