@@ -9,6 +9,12 @@ public:
     Quate(const Quate<T, Container>& other);
     Quate(const Container<T>& other);
     ~Quate();
+
+    void Enqueue(const T value);
+    void Dequeue();
+    bool IsEmpty();
+
+    T Peek();
 };
 
 #include "Quete.tpp"
