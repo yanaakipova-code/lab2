@@ -1,4 +1,5 @@
 #include "Quete.hpp"
+#include "../Error.hpp"
 
 template<typename T, template<typename> class Container>
 Quate<T, Container>::Quate(): m_data = new Container<T>(){}
@@ -51,7 +52,7 @@ bool Quate<T, Container>::IsEmpty(){
 }
 
 template<typename T, template<typename> class Container>
-T Quate<T, Container>::Peek(){
+T Quate<T, Container>::Peek() const{
     if(m_data->GetLength()){
         throw QueueIsEmptyException("Очередь пустая");
     }
@@ -65,14 +66,14 @@ int Quate<T, Container>::GetSize() const{
 }
 
 template<typename T, template<typename> class Container>
-T Quate<T, Container>::GetData(const size_t index) const{
+T Quate<T, Container>::GetData(const int index) const{
     return m_data.Get(index);
 }
 
 template<typename T, template<typename> class Container>
 template<typename U>
 Quate<U, Container> Quate<T, Container>::Map(U (*func)(const T&)) const{
-    Quate<U, Container>() new_quate;
+    Quate<U, Container> new_quate;
 
     for (size_t i = 0; i < m_data->GetLeght(); i++){
         T new_elem = func(m_data->Get(i));
@@ -83,7 +84,7 @@ Quate<U, Container> Quate<T, Container>::Map(U (*func)(const T&)) const{
 
 template<typename T, template<typename> class Container>
 Quate<T, Container> Quate<T, Container>::Where(bool (*predicate)(const T&)) const{
-    Quate<T, Container>() new_quate;
+    Quate<T, Container> new_quate;
 
     for(size_t i = 0; i < m_data->GetLeght(); i++){
         bool new_value = predicate(m_data->Get(i));
@@ -105,7 +106,7 @@ T Quate<T, Container>::Reduce(T (*func)(const T&, const T&)) const{
 
 template<typename T, template<typename> class Container>
 Quate<T, Container> Quate<T,Container>::Concat(Quate<T, Container>& other) const{
-    Quate<T, Container>() result = *this;
+    Quate<T, Container> result = *this;
     for(size_t i = 0; i <= m_data->GetLeght(); i++){
         result.Enqueue(other.m_data->Get(i));
     }
@@ -118,3 +119,50 @@ void Quate<T, Container>::Clutch(Quate<T, Container>& other){
         *this->Enqueue(other.GetData(i));
     }
 }
+
+template<typename T, template<typename> class Container>
+Quate<T, Container> Quate<T, Container>::Extraction(int begin, int end) const{
+    if (begin > GetSize() || end >= GetSize()){
+        throw OutOfRangeException("индексы выходят за перделы очереди");
+    }
+    Quate<T, Container> result;
+
+    for(size_t i = begin; i <= end; i++){
+        result.Enqueue(GetData(i));
+    }
+    return result;
+}
+
+template<typename T, template<typename> class Container>
+bool Quate<T, Container>::Check(Quate<T, Container>& other) const{
+    if(other.GetSize() == 0){
+        return true
+    }
+    if(other.GetSize > GetSize()){
+        return false;
+    }
+    size_t count = 0
+    for(size_t i = 0; i < GetSize(); i++){
+        for(size_t j = 0; j < other.GetSize(); j++){
+            if (GetData(i) == other.GetData(j)){
+                count+=1;
+            }
+        }
+    }
+    if (count == other.GetSize()){
+        return true;
+    }
+    return false;
+}
+
+template<typename T, template<typename> class Container>
+SplitInfo<T, Container> Quate<T, Container>::Split(bool (*func)(const T&)) const{
+    SplitInfo<T, Container> result;
+    if(func(GetData(i))){
+        result.Que_1.Enqueue(GetData(i));
+    }
+    else{
+        result.Que_2.Enqueue(GetData(i));
+    }
+    return result;
+} 
