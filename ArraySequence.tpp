@@ -77,6 +77,22 @@ Sequence<T>* ArraySequence<T>::GetSubsequence(size_t start_index, size_t end_ind
 }
 
 template<class T>
+const T& ArraySequence<T>::GetRef(size_t index) const {
+    if (index >= GetLength()) {
+        throw OutOfRangeException("Индекс за пределами");
+    }
+    return m_items->GetRef(index);
+}
+
+template<class T>
+T& ArraySequence<T>::GetRef(size_t index) {
+    if (index >= GetLength()) {
+        throw OutOfRangeException("Индекс за пределами");
+    }
+    return m_items->GetRef(index);
+}
+
+template<class T>
 void ArraySequence<T>::Append(T temp) {
     int old_size = m_items->GetSize();
     m_items->Resize(old_size + 1);

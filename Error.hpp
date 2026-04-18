@@ -64,3 +64,8 @@ class  NotSetElemException: public Exception{
 public:
     NotSetElemException(const char* message): Exception(message){}
 };
+
+class  DivisionByZeroException: public Exception{
+public:
+    DivisionByZeroException(const char* message): Exception(message){}
+};

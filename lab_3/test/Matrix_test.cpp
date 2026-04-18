@@ -1,35 +1,25 @@
 #include "catch.hpp"
 #include "../../Error.hpp"
 #include "../Matrix.hpp"
-#include "../ArraySequence.hpp"
 #include "../ListSequence.hpp"
 
-// TEST_CASE("Матрица: конструктор по умолчанию (ArraySequence)") {
-//     SquareMatrix<int, ArraySequence> mat;
-//     REQUIRE(mat.GetSize() == 0);
-// }
 
-// TEST_CASE("Матрица: конструктор с размером (ArraySequence)") {
-//     SquareMatrix<int, ArraySequence> mat(5);
-//     REQUIRE(mat.GetSize() == 5);
-    
-//     REQUIRE(mat.Get(0, 0) == 0);
-//     REQUIRE(mat.Get(2, 2) == 0);
-//     REQUIRE(mat.Get(4, 4) == 0);
-// }
-
-TEST_CASE("Матрица: конструктор по умолчанию (ListSequence)") {
+TEST_CASE("Матрица: конструктор по умолчанию") {
     SquareMatrix<int, ListSequence> mat;
     REQUIRE(mat.GetSize() == 0);
 }
 
-TEST_CASE("Матрица: конструктор с размером (ListSequence)") {
+TEST_CASE("Матрица: конструктор с размером") {
     SquareMatrix<int, ListSequence> mat(5);
     REQUIRE(mat.GetSize() == 5);
+    
+    REQUIRE(mat.Get(0, 0) == 0);
+    REQUIRE(mat.Get(2, 2) == 0);
+    REQUIRE(mat.Get(4, 4) == 0);
 }
 
 TEST_CASE("Конструктор с initializer_list") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     
     REQUIRE(mat.GetSize() == 3);
     REQUIRE(mat.Get(0, 0) == 1);
@@ -44,13 +34,12 @@ TEST_CASE("Конструктор с initializer_list") {
 }
 
 TEST_CASE("Конструктор с initializer_list - не квадратная матрица") {
-    REQUIRE_THROWS_AS((SquareMatrix<int, ArraySequence>{{1, 2}, {1, 2, 3}}), MatrixSquereException);
-    REQUIRE_THROWS_AS((SquareMatrix<int, ArraySequence>{{1, 2, 3}, {4, 5}}), MatrixSquereException);
+    REQUIRE_THROWS_AS((SquareMatrix<int, ListSequence>{{1, 2}, {1, 2, 3}}), MatrixSquereException);
+    REQUIRE_THROWS_AS((SquareMatrix<int, ListSequence>{{1, 2, 3}, {4, 5}}), MatrixSquereException);
 }
 
-
 TEST_CASE("Get и Set правильные") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     mat.Set(0, 0, 10);
     mat.Set(1, 1, 20);
@@ -62,7 +51,7 @@ TEST_CASE("Get и Set правильные") {
 }
 
 TEST_CASE("Get с неверными индексами") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE_THROWS_AS(mat.Get(3, 0), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.Get(0, 3), OutOfRangeException);
@@ -70,240 +59,228 @@ TEST_CASE("Get с неверными индексами") {
 }
 
 TEST_CASE("Set с неверными индексами") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE_THROWS_AS(mat.Set(3, 0, 10), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.Set(0, 3, 10), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.Set(5, 5, 10), OutOfRangeException);
 }
 
-
-
 TEST_CASE("Sum - сложение матриц") {
-    SquareMatrix<int, ArraySequence> mat1 = {{1, 2}, {3, 4}};
-    SquareMatrix<int, ArraySequence> mat2 = {{5, 6}, {7, 8}};
+    SquareMatrix<int, ListSequence> mat1 = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> mat2 = {{5, 6}, {7, 8}};
     
-    SquareMatrix<int, ArraySequence> expected = {{6, 8}, {10, 12}};
-    SquareMatrix<int, ArraySequence> result = mat1.Sum(mat2);
+    SquareMatrix<int, ListSequence> expected = {{6, 8}, {10, 12}};
+    SquareMatrix<int, ListSequence> result = mat1.Sum(mat2);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("Sum - сложение с нулевой матрицей") {
-    SquareMatrix<int, ArraySequence> mat1 = {{1, 2}, {3, 4}};
-    SquareMatrix<int, ArraySequence> zero(2);
+    SquareMatrix<int, ListSequence> mat1 = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> zero(2);
     
-    SquareMatrix<int, ArraySequence> result = mat1.Sum(zero);
+    SquareMatrix<int, ListSequence> result = mat1.Sum(zero);
     
     REQUIRE(result == mat1);
 }
 
 TEST_CASE("Sum - разные размеры матриц") {
-    SquareMatrix<int, ArraySequence> mat1(2);
-    SquareMatrix<int, ArraySequence> mat2(3);
+    SquareMatrix<int, ListSequence> mat1(2);
+    SquareMatrix<int, ListSequence> mat2(3);
     
     REQUIRE_THROWS_AS(mat1.Sum(mat2), MatrixSquereSizeException);
 }
 
-
-
 TEST_CASE("Multiply - умножение на скаляр") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2}, {3, 4}};
-    SquareMatrix<int, ArraySequence> expected = {{2, 4}, {6, 8}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> expected = {{2, 4}, {6, 8}};
     
-    SquareMatrix<int, ArraySequence> result = mat.Multiply(2);
+    SquareMatrix<int, ListSequence> result = mat.Multiply(2);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("Multiply - умножение на 0") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2}, {3, 4}};
-    SquareMatrix<int, ArraySequence> expected(2);
+    SquareMatrix<int, ListSequence> mat = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> expected(2);
     
-    SquareMatrix<int, ArraySequence> result = mat.Multiply(0);
+    SquareMatrix<int, ListSequence> result = mat.Multiply(0);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("Multiply - умножение на отрицательное число") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2}, {3, 4}};
-    SquareMatrix<int, ArraySequence> expected = {{-1, -2}, {-3, -4}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> expected = {{-1, -2}, {-3, -4}};
     
-    SquareMatrix<int, ArraySequence> result = mat.Multiply(-1);
+    SquareMatrix<int, ListSequence> result = mat.Multiply(-1);
     
     REQUIRE(result == expected);
 }
 
-
 TEST_CASE("MultiplyRow - умножение строки на скаляр") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> expected = {{2, 4, 6}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> expected = {{2, 4, 6}, {4, 5, 6}, {7, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.MultiplyRow(0, 2);
+    SquareMatrix<int, ListSequence> result = mat.MultiplyRow(0, 2);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("MultiplyRow - неверный индекс строки") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE_THROWS_AS(mat.MultiplyRow(3, 2), OutOfRangeException);
 }
 
-
 TEST_CASE("MultiplyCol - умножение столбца на скаляр") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> expected = {{2, 2, 3}, {8, 5, 6}, {14, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> expected = {{2, 2, 3}, {8, 5, 6}, {14, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.MultiplyCol(0, 2);
+    SquareMatrix<int, ListSequence> result = mat.MultiplyCol(0, 2);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("MultiplyCol - неверный индекс столбца") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE_THROWS_AS(mat.MultiplyCol(3, 2), OutOfRangeException);
 }
 
-
 TEST_CASE("SumRow - сложение строк (к первой прибавляем вторую)") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> expected = {{5, 7, 9}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> expected = {{5, 7, 9}, {4, 5, 6}, {7, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.SumRow(0, 1, 1);
+    SquareMatrix<int, ListSequence> result = mat.SumRow(0, 1, 1);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("SumRow - сложение строк с коэффициентом") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> expected = {{9, 12, 15}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> expected = {{9, 12, 15}, {4, 5, 6}, {7, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.SumRow(0, 1, 2);
+    SquareMatrix<int, ListSequence> result = mat.SumRow(0, 1, 2);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("SumRow - неверные индексы строк") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE_THROWS_AS(mat.SumRow(3, 0, 1), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.SumRow(0, 3, 1), OutOfRangeException);
 }
 
-
 TEST_CASE("SumCol - сложение столбцов") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> expected = {{3, 2, 3}, {9, 5, 6}, {15, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> expected = {{3, 2, 3}, {9, 5, 6}, {15, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.SumCol(0, 1, 1);
+    SquareMatrix<int, ListSequence> result = mat.SumCol(0, 1, 1);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("SumCol - неверные индексы столбцов") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
 
     REQUIRE_THROWS_AS(mat.SumCol(3, 0, 1), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.SumCol(0, 3, 1), OutOfRangeException);
 }
 
 TEST_CASE("SwapRow - обмен строк") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> expected = {{4, 5, 6}, {1, 2, 3}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> expected = {{4, 5, 6}, {1, 2, 3}, {7, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.SwapRow(0, 1);
+    SquareMatrix<int, ListSequence> result = mat.SwapRow(0, 1);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("SwapRow - обмен строк с одинаковыми индексами") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.SwapRow(0, 0);
+    SquareMatrix<int, ListSequence> result = mat.SwapRow(0, 0);
     
     REQUIRE(result == mat);
 }
 
 TEST_CASE("SwapRow - неверные индексы строк") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE_THROWS_AS(mat.SwapRow(3, 0), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.SwapRow(0, 3), OutOfRangeException);
 }
 
-
 TEST_CASE("SwapCol - обмен столбцов") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> expected = {{2, 1, 3}, {5, 4, 6}, {8, 7, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> expected = {{2, 1, 3}, {5, 4, 6}, {8, 7, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.SwapCol(0, 1);
+    SquareMatrix<int, ListSequence> result = mat.SwapCol(0, 1);
     
     REQUIRE(result == expected);
 }
 
 TEST_CASE("SwapCol - обмен столбцов с одинаковыми индексами") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     
-    SquareMatrix<int, ArraySequence> result = mat.SwapCol(0, 0);
+    SquareMatrix<int, ListSequence> result = mat.SwapCol(0, 0);
     
     REQUIRE(result == mat);
 }
 
 TEST_CASE("SwapCol - неверные индексы столбцов") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE_THROWS_AS(mat.SwapCol(3, 0), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.SwapCol(0, 3), OutOfRangeException);
 }
 
-
 TEST_CASE("MatrixNorm - норма матрицы (максимальный элемент)") {
-    SquareMatrix<int, ArraySequence> mat = {{1, -5, 3}, {4, 2, -8}, {7, 0, 6}};
+    SquareMatrix<int, ListSequence> mat = {{1, -5, 3}, {4, 2, -8}, {7, 0, 6}};
     
-    REQUIRE(mat.MatrixNorm() == 8);  // максимальный по модулю = 8
+    REQUIRE(mat.MatrixNorm() == 8);
 }
 
 TEST_CASE("MatrixNorm - все элементы положительные") {
-    SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     
     REQUIRE(mat.MatrixNorm() == 9);
 }
 
 TEST_CASE("MatrixNorm - с отрицательными числами") {
-    SquareMatrix<int, ArraySequence> mat = {{-1, -2}, {-3, -4}};
+    SquareMatrix<int, ListSequence> mat = {{-1, -2}, {-3, -4}};
     
     REQUIRE(mat.MatrixNorm() == 4);
 }
 
 TEST_CASE("MatrixNorm - нулевая матрица") {
-    SquareMatrix<int, ArraySequence> mat(3);
+    SquareMatrix<int, ListSequence> mat(3);
     
     REQUIRE(mat.MatrixNorm() == 0);
 }
 
-
 TEST_CASE("Оператор == - одинаковые матрицы") {
-    SquareMatrix<int, ArraySequence> mat1 = {{1, 2}, {3, 4}};
-    SquareMatrix<int, ArraySequence> mat2 = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> mat1 = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> mat2 = {{1, 2}, {3, 4}};
     
     REQUIRE(mat1 == mat2);
 }
 
 TEST_CASE("Оператор == - разные матрицы") {
-    SquareMatrix<int, ArraySequence> mat1 = {{1, 2}, {3, 4}};
-    SquareMatrix<int, ArraySequence> mat2 = {{1, 2}, {3, 5}};
-    SquareMatrix<int, ArraySequence> mat3(2);
+    SquareMatrix<int, ListSequence> mat1 = {{1, 2}, {3, 4}};
+    SquareMatrix<int, ListSequence> mat2 = {{1, 2}, {3, 5}};
+    SquareMatrix<int, ListSequence> mat3(2);
     
     REQUIRE(mat1 != mat2);
     REQUIRE(mat1 != mat3);
 }
 
-
 TEST_CASE("Конструктор копирования") {
-    SquareMatrix<int, ArraySequence> original = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    SquareMatrix<int, ArraySequence> copy(original);
+    SquareMatrix<int, ListSequence> original = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    SquareMatrix<int, ListSequence> copy(original);
     
     REQUIRE(copy == original);
     
@@ -311,13 +288,13 @@ TEST_CASE("Конструктор копирования") {
     REQUIRE(copy.Get(0, 0) == 1);
 }
 
-
 TEST_CASE("Матрица с типом double") {
-    SquareMatrix<double, ArraySequence> mat = {{1.5, 2.5}, {3.5, 4.5}};
+    SquareMatrix<double, ListSequence> mat = {{1.5, 2.5}, {3.5, 4.5}};
     
-    REQUIRE(mat.Get(0, 0) == 1.5);
-    REQUIRE(mat.Get(0, 1) == 2.5);
+    REQUIRE(mat.Get(0, 0) == Approx(1.5));
+    REQUIRE(mat.Get(0, 1) == Approx(2.5));
     
     auto result = mat.Multiply(2.0);
-    REQUIRE(result.Get(0, 0) == 3.0);
+    REQUIRE(result.Get(0, 0) == Approx(3.0));
 }
+

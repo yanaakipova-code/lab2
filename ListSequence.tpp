@@ -76,6 +76,30 @@ Sequence<T>* ListSequence<T>::GetSubsequence(size_t start_index, size_t end_inde
 }
 
 template<class T>
+void ListSequence<T>::Set(size_t index, T value) {
+    if (index >= GetLength()) {
+        throw OutOfRangeException("Индекс за пределами");
+    }
+    m_list->Set(index, value);
+}
+
+template<class T>
+const T& ListSequence<T>::GetRef(size_t index) const {
+    if (index >= GetLength()) {
+        throw OutOfRangeException("Индекс за пределами");
+    }
+    return m_list->GetNode(index)->data;
+}
+
+template<class T>
+T& ListSequence<T>::GetRef(size_t index) {
+    if (index >= GetLength()) {
+        throw OutOfRangeException("Индекс за пределами");
+    }
+    return m_list->GetNode(index)->data;
+}
+
+template<class T>
 void ListSequence<T>::Append(T temp) {
     m_list->Append(temp);
 }

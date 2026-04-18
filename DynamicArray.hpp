@@ -20,7 +20,6 @@ public:
     size_t GetSize();
     void Set(size_t index, T value);
     void Resize(size_t new_size);
-    
     T& GetRef(size_t index);
     const T& GetRef(size_t index) const;
     

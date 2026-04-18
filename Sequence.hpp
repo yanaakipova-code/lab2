@@ -15,6 +15,9 @@ public:
     virtual size_t GetLength() const = 0;
     virtual Sequence<T>* GetSubsequence(size_t start_index, size_t end_index) const = 0;
 
+    virtual const T& GetRef(size_t index) const = 0;
+    virtual T& GetRef(size_t index) = 0;
+
     virtual void Append(T temp) = 0;
     virtual void Prepend(T temp) = 0;
     virtual void InsertAt(T temp, size_t index) = 0;
