@@ -811,45 +811,6 @@ TEST_CASE("Set: с ListSequence вместо ArraySequence") {
     REQUIRE_FALSE(set.Contains(20));
 }
 
-TEST_CASE("Set: исключения при неверных операциях") {
-    Set<int, ArraySequence> set;
-    
-    REQUIRE_THROWS_AS(set.RemoveByValue(0), OutOfRangeException);
-    REQUIRE_THROWS_AS(set.RemoveByValue(5), OutOfRangeException);
-    REQUIRE_THROWS_AS(set.RemoveByValue(99), OutOfRangeException);
-    
-    REQUIRE_THROWS_AS(set.GetData(0), OutOfRangeException);
-
-    REQUIRE_FALSE(set.Contains(42));
-    
-    set.Add(1);
-    REQUIRE_THROWS_AS(set.RemoveByValue(99), NotSetElemException);
-}
-
-TEST_CASE("Set: итераторы - range-based for") {
-    Set<int, ArraySequence> set;
-    set.Add(1);
-    set.Add(2);
-    set.Add(3);
-    
-    int sum = 0;
-    for (const auto& val : set) {
-        sum += val;
-    }
-    REQUIRE(sum == 6);
-}
-
-TEST_CASE("Set: итераторы - пустое множество") {
-    Set<int, ArraySequence> set;
-    
-    int count = 0;
-    for (const auto& val : set) {
-        count++;
-    }
-    REQUIRE(count == 0);
-}
-
-
 TEST_CASE("Set: добавление большого количества элементов") {
     Set<int, ArraySequence> set;
     

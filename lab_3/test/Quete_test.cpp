@@ -548,7 +548,7 @@ TEST_CASE("Queue: Extraction - неверные индексы") {
     REQUIRE_THROWS_AS(queue.Extraction(5, 6), OutOfRangeException);
 }
 
-TEST_CASE("Queue: Check - поиск подпоследовательности") {
+TEST_CASE("Queue: Check - все элементы присутствуют (порядок не важен)") {
     Quate<int, ArraySequence> queue;
     for (int i = 1; i <= 10; i++) {
         queue.Enqueue(i);
@@ -556,13 +556,13 @@ TEST_CASE("Queue: Check - поиск подпоследовательности"
     
     Quate<int, ArraySequence> pattern;
     pattern.Enqueue(3);
-    pattern.Enqueue(4);
     pattern.Enqueue(5);
+    pattern.Enqueue(7);
     
     REQUIRE(queue.Check(pattern));
 }
 
-TEST_CASE("Queue: Check - подпоследовательность не найдена") {
+TEST_CASE("Queue: Check - элементы присутствуют в любом порядке") {
     Quate<int, ArraySequence> queue;
     queue.Enqueue(1);
     queue.Enqueue(2);
@@ -571,10 +571,10 @@ TEST_CASE("Queue: Check - подпоследовательность не най
     queue.Enqueue(5);
     
     Quate<int, ArraySequence> pattern;
-    pattern.Enqueue(2);
     pattern.Enqueue(4);
+    pattern.Enqueue(2);
     
-    REQUIRE_FALSE(queue.Check(pattern));
+    REQUIRE(queue.Check(pattern));
 }
 
 TEST_CASE("Queue: Check - пустой шаблон") {
@@ -600,7 +600,7 @@ TEST_CASE("Queue: Check - шаблон длиннее очереди") {
     REQUIRE_FALSE(queue.Check(pattern));
 }
 
-TEST_CASE("Queue: Check - подпоследовательность в начале") {
+TEST_CASE("Queue: Check - элемент отсутствует") {
     Quate<int, ArraySequence> queue;
     queue.Enqueue(1);
     queue.Enqueue(2);
@@ -609,23 +609,9 @@ TEST_CASE("Queue: Check - подпоследовательность в нача
     
     Quate<int, ArraySequence> pattern;
     pattern.Enqueue(1);
-    pattern.Enqueue(2);
+    pattern.Enqueue(5);
     
-    REQUIRE(queue.Check(pattern));
-}
-
-TEST_CASE("Queue: Check - подпоследовательность в конце") {
-    Quate<int, ArraySequence> queue;
-    queue.Enqueue(1);
-    queue.Enqueue(2);
-    queue.Enqueue(3);
-    queue.Enqueue(4);
-    
-    Quate<int, ArraySequence> pattern;
-    pattern.Enqueue(3);
-    pattern.Enqueue(4);
-    
-    REQUIRE(queue.Check(pattern));
+    REQUIRE_FALSE(queue.Check(pattern));
 }
 
 TEST_CASE("Queue: Split - разделение по чётности") {
