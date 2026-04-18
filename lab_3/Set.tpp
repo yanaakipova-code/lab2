@@ -4,14 +4,14 @@ template<typename T, template<typename> class Container>
 Set<T, Container>::Set(): m_data(new Container<T>()){}
 
 template<typename T, template<typename> class Container>
-Set<T, Container>::Set(Container<T>& other): Set(){
+Set<T, Container>::Set(const Container<T>& other): Set(){
     for(const auto& i : other){
-        m_data->Append(i);
+        Add(i);
     }
 }
 
 template<typename T, template<typename> class Container>
-Set<T, Container>::Set(Set<T, Container>& other):Set(){
+Set<T, Container>::Set(const Set<T, Container>& other):Set(){
     for(const auto& i : other){
         m_data->Append(i);
     }
@@ -59,15 +59,16 @@ void Set<T, Container>::RemoveByIndex(int index){
 template<typename T, template<typename> class Container>
 void Set<T, Container>::RemoveByValue(const T& value){
     int index = -1;
-    for(size_t i = 0; i < GetSize(); i++){
+    for(int i = 0; i < GetSize(); i++){
         if(GetData(i) == value){
             index = i;
+            break;
         }
     }
     if(index == -1){
         throw NotSetElemException("нет такого элемента");
     }
-    Remove(index);
+    RemoveByIndex(index);
 }
 
 template<typename T, template<typename> class Container>
@@ -97,7 +98,7 @@ Set<T, Container> Set<T, Container>::Where(bool (*predicate)(const T&)){
     Set<T, Container> result;
     for(size_t i = 0; i < GetSize(); i++){
         if(predicate(GetData(i))){
-            result.Add(GetData(i))
+            result.Add(GetData(i));
         }
     }
     return result;
@@ -146,17 +147,16 @@ Set<T, Container> Set<T, Container>::Subtraction(const Set<T, Container>& other)
 
     for(size_t i = 0; i < GetSize(); i++){
         if(other.Contains(GetData(i))){
-            new_set.Remove(GetData(i));
+            new_set.RemoveByValue(GetData(i));
         }
     }
     return new_set;
 }
 
 template<typename T, template<typename> class Container>
-bool Set<T, Container>::CheckSubset(const Set<T, Container>& other) const{
-    size_t count = 0;
-    for(const auto& i : other){
-        if(!Contains(i)){
+bool Set<T, Container>::CheckSubset(const Set<T, Container>& other) const {
+    for (const auto& i : other) {
+        if (!Contains(i)) {
             return false;
         }
     }
@@ -188,5 +188,15 @@ auto Set<T, Container>::cbegin() const{
 
 template<typename T, template<typename> class Container>
 auto Set<T, Container>::cend() const{
+    return m_data->cend();
+}
+
+template<typename T, template<typename> class Container>
+auto Set<T, Container>::begin() const {
+    return m_data->cbegin();
+}
+
+template<typename T, template<typename> class Container>
+auto Set<T, Container>::end() const {
     return m_data->cend();
 }

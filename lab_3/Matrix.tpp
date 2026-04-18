@@ -1,17 +1,20 @@
 #include "Matrix.hpp"
 #include <stdexcept>
+#include <cstdlib> 
+#include <cmath>
 #include "../Error.hpp"
 
 using namespace std;
 
 template<typename T, template<typename> class Container>
-SquareMatrix<T, Container>::SquareMatrix(): m_size(0){
+SquareMatrix<T, Container>::SquareMatrix() : m_size(0) {
     m_data = new Container<Container<T>>();
 }
 
 template<typename T, template<typename> class Container>
-SquareMatrix<T, Container>::SquareMatrix(size_t size): SquareMatrix(){
-    m_size = size;
+SquareMatrix<T, Container>::SquareMatrix(size_t size) : m_size(size) {
+    m_data = new Container<Container<T>>();
+    
     for (size_t i = 0; i < size; i++){
         Container<T> row;
         for (size_t j = 0; j < size; j++){
@@ -22,16 +25,15 @@ SquareMatrix<T, Container>::SquareMatrix(size_t size): SquareMatrix(){
 }
 
 template<typename T, template<typename> class Container>
-SquareMatrix<T,Container>::SquareMatrix(initializer_list<initializer_list<T>> matrix): SquareMatrix(){
-    size_t size = matrix.size();
-
-    for (auto& row_matrix: matrix){
-        if(row_matrix.size() != size){
-            throw MatrixSquereException("Maтрица может быть только квадратной");
+SquareMatrix<T,Container>::SquareMatrix(initializer_list<initializer_list<T>> matrix) : m_size(matrix.size()) {
+    m_data = new Container<Container<T>>();
+    
+    for (auto& row_matrix : matrix){
+        if(row_matrix.size() != m_size){
+            throw MatrixSquereException("Матрица может быть только квадратной");
         }
-
         Container<T> row;
-        for (auto value: row_matrix){
+        for (auto value : row_matrix){
             row.Append(value);
         }
         m_data->Append(row);
@@ -66,7 +68,7 @@ void SquareMatrix<T, Container>::Set(size_t row, size_t col, T value) {
 
     Container<T> row_container = m_data->Get(row);
     row_container.Set(col, value);
-    m_data->Set(row, row_container)
+    m_data->Set(row, row_container);
 }
 
 template<typename T, template<typename> class Container>
@@ -184,7 +186,7 @@ SquareMatrix<T, Container> SquareMatrix<T, Container>::SwapCol(size_t col_n1, si
     for (size_t i = 0; i < m_size; i++){
         T temp = result.Get(i, col_n1);
         result.Set(i, col_n1, result.Get(i,col_n2));
-        result,Set(i, col_n2, temp);
+        result.Set(i, col_n2, temp);
     }
     return result;
 }
@@ -205,18 +207,23 @@ T SquareMatrix<T, Container>:: MatrixNorm() const{
 
 template<typename T, template<typename> class Container>
 bool SquareMatrix<T, Container>::operator==(const SquareMatrix<T, Container>& other) const{
-    if (other.GetSize() == GetSize()){
+     if (other.GetSize() != GetSize()){
         return false;
     }
 
     for(size_t i = 0; i < GetSize(); i++){
-        for(size_t j = 0; j < other.GetSize(); j++){
-            if (Get(i,j) != other.Get(i.j)){
+        for(size_t j = 0; j < GetSize(); j++){
+            if (Get(i,j) != other.Get(i,j)){
                 return false;
             }
         }
     }
     return true;
+}
+
+template<typename T, template<typename> class Container>
+bool SquareMatrix<T, Container>::operator!=(const SquareMatrix<T, Container>& other) const{
+    return !(*this == other);
 }
 
 template<typename T, template<typename> class Container>

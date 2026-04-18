@@ -7,8 +7,8 @@ private:
     Container<T>* m_data;
 public:
     Set();
-    Set(Container<T>& other);
-    Set(Set<T, Container>& other);
+    Set(const Container<T>& other);
+    Set(const Set<T, Container>& other);
     ~Set();
 
     unsigned int GetSize() const;
@@ -34,6 +34,8 @@ public:
     auto end();
     auto cbegin() const;
     auto cend() const;
+    auto begin() const;
+    auto end() const;
 
 };
 

@@ -30,6 +30,7 @@ public:
     SquareMatrix<T, Container> SwapCol(size_t col_n1, size_t col_n2) const;
 
     bool operator==(const SquareMatrix<T, Container>& other) const;
+    bool operator!=(const SquareMatrix<T, Container>& other) const;
 
     T MatrixNorm() const;
 

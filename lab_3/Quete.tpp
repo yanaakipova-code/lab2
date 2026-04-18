@@ -75,7 +75,7 @@ template<typename U>
 Quate<U, Container> Quate<T, Container>::Map(U (*func)(const T&)) const{
     Quate<U, Container> new_quate;
 
-    for (size_t i = 0; i < m_data->GetLeght(); i++){
+    for (size_t i = 0; i < m_data->GetLength(); i++){
         T new_elem = func(m_data->Get(i));
         new_quate.Enqueue(new_elem);
     }
@@ -86,10 +86,10 @@ template<typename T, template<typename> class Container>
 Quate<T, Container> Quate<T, Container>::Where(bool (*predicate)(const T&)) const{
     Quate<T, Container> new_quate;
 
-    for(size_t i = 0; i < m_data->GetLeght(); i++){
+    for(size_t i = 0; i < m_data->GetLength(); i++){
         bool new_value = predicate(m_data->Get(i));
         if(new_value){
-            new_quate.Enqueue(i);
+            new_quate.Enqueue(m_data->Get(i));
         }
     }
     return new_quate;
@@ -98,7 +98,7 @@ Quate<T, Container> Quate<T, Container>::Where(bool (*predicate)(const T&)) cons
 template<typename T, template<typename> class Container>
 T Quate<T, Container>::Reduce(T (*func)(const T&, const T&)) const{
     T result = 0;
-    for(size_t i = 0; i < m_data->GetLeght(); i++){
+    for(size_t i = 0; i < m_data->GetLength(); i++){
         result = func(m_data->Get(i), result);
     }
     return result;
@@ -107,8 +107,8 @@ T Quate<T, Container>::Reduce(T (*func)(const T&, const T&)) const{
 template<typename T, template<typename> class Container>
 Quate<T, Container> Quate<T,Container>::Concat(Quate<T, Container>& other) const{
     Quate<T, Container> result = *this;
-    for(size_t i = 0; i <= m_data->GetLeght(); i++){
-        result.Enqueue(other.m_data->Get(i));
+    for(int i = 0; i < other.GetSize(); i++){
+        result.Enqueue(other.GetData(i));
     }
     return result;
 }
@@ -116,56 +116,53 @@ Quate<T, Container> Quate<T,Container>::Concat(Quate<T, Container>& other) const
 template<typename T, template<typename> class Container>
 void Quate<T, Container>::Clutch(Quate<T, Container>& other){
     for(const auto& i : other){
-        *this->Enqueue(i);
+        Enqueue(i);
     }
 }
 
 template<typename T, template<typename> class Container>
 Quate<T, Container> Quate<T, Container>::Extraction(int begin, int end) const{
-    if (begin > GetSize() || end >= GetSize()){
+    if (begin < 0 || end < 0 || begin > end || begin >= GetSize() || end >= GetSize()){
         throw OutOfRangeException("индексы выходят за перделы очереди");
     }
     Quate<T, Container> result;
 
-    for(size_t i = begin; i <= end; i++){
+    for(int i = begin; i <= end; i++){
         result.Enqueue(GetData(i));
     }
     return result;
 }
 
 template<typename T, template<typename> class Container>
-bool Quate<T, Container>::Check(Quate<T, Container>& other) const{
-    if(other.GetSize() == 0){
-        return true
-    }
-    if(other.GetSize > GetSize()){
-        return false;
-    }
-    size_t count = 0
-    for(size_t i = 0; i < GetSize(); i++){
-        for(size_t j = 0; j < other.GetSize(); j++){
-            if (GetData(i) == other.GetData(j)){
-                count+=1;
+bool Quate<T, Container>::Check(Quate<T, Container>& other) const {
+    if(other.GetSize() == 0) return true;
+    if(other.GetSize() > GetSize()) return false;
+    
+    for(int i = 0; i < other.GetSize(); i++){
+        bool found = false;
+        for(int j = 0; j < GetSize(); j++){
+            if(other.GetData(i) == GetData(j)){
+                found = true;
+                break;
             }
         }
+        if(!found) return false;
     }
-    if (count == other.GetSize()){
-        return true;
-    }
-    return false;
+    return true;
 }
 
 template<typename T, template<typename> class Container>
-SplitInfo<T, Container> Quate<T, Container>::Split(bool (*func)(const T&)) const{
+SplitInfo<T, Container> Quate<T, Container>::Split(bool (*func)(const T&)) const {
     SplitInfo<T, Container> result;
-    if(func(GetData(i))){
-        result.Que_1.Enqueue(GetData(i));
-    }
-    else{
-        result.Que_2.Enqueue(GetData(i));
+    for(int i = 0; i < GetSize(); i++){
+        if(func(GetData(i))){
+            result.Que_1.Enqueue(GetData(i));
+        } else {
+            result.Que_2.Enqueue(GetData(i));
+        }
     }
     return result;
-} 
+}
 
 template<typename T, template<typename> class Container>
 auto Quate<T, Container>::begin(){
@@ -184,5 +181,15 @@ auto Quate<T, Container>::cbegin() const{
 
 template<typename T, template<typename> class Container>
 auto Quate<T, Container>::cend() const{
+    return m_data->cend();
+}
+
+template<typename T, template<typename> class Container>
+auto Quate<T, Container>::begin() const {
+    return m_data->cbegin();
+}
+
+template<typename T, template<typename> class Container>
+auto Quate<T, Container>::end() const {
     return m_data->cend();
 }

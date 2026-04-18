@@ -1,6 +1,9 @@
 #pragma once
 
 template<typename T, template<typename> class Container>
+class Quate;
+
+template<typename T, template<typename> class Container>
 struct SplitInfo{
     Quate<T, Container> Que_1;
     Quate<T, Container> Que_2;
@@ -41,6 +44,8 @@ public:
 
     auto begin();
     auto end();
+    auto begin() const;
+    auto end() const;
     auto cbegin() const;
     auto cend() const;
 };

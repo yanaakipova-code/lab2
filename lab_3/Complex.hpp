@@ -1,4 +1,5 @@
 #pragma once
+#include "../Error.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -36,16 +37,19 @@ public:
     Complex operator-(const Complex& other){
         return Complex(m_re - other.m_re, m_im - other.m_im);
     }
-    Complex operator*(const Conplex& other){
+    Complex operator*(const Complex& other){
         U re = (m_re * other.m_re) - (m_im * other.m_im);
-        U im = (m_re * other.m_re) + (m_im * other.m_im);
+        U im = (m_re * other.m_im) + (m_im * other.m_re); 
 
         return Complex(re, im);
     }
     Complex operator/(const Complex& other){
         U del = (other.m_re * other.m_re) + (other.m_im * other.m_im); 
+        if (del == 0){
+            throw DivisionByZeroException("Деление на ноль");
+        }
         U re = ((m_re * other.m_re) + (m_im * other.m_im)) / del;
-        U im = ((m_im * other.m_re) - (m_im * other.m_re)) / del;
+        U im = ((m_im * other.m_re) - (m_re * other.m_im)) / del;
 
         return Complex(re, im);
     }
@@ -67,26 +71,25 @@ public:
     }
 
     friend U abs(const Complex& z) {
-    return z.Abs();
+        return z.Abs();
     }
 
     string ToString() const{
-        string res;
         if (m_re == 0 && m_im == 0) {
             return "0";
         }
         if(m_re == 0){
-            res = to_string(m_im) + "i";
+            return to_string(m_im) + "i";
         }
         if (m_im == 0){
-            res = to_string(m_re);
+            return to_string(m_re);
         }
         if(m_im > 0){
-            res = to_string(m_re) + "+" to_string(m_im) + "i";
+            return to_string(m_re) + "+" + to_string(m_im) + "i";
         }
         if(m_im < 0){
-            res = to_string(m_re) + "-" to_string(m_im) + "i";
+            return to_string(m_re) + to_string(m_im) + "i";
         }
-        return res;
     }
+
 };
