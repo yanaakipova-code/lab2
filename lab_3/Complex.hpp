@@ -72,17 +72,20 @@ public:
 
     string ToString() const{
         string res;
-        if(m_re = 0){
+        if (m_re == 0 && m_im == 0) {
+            return "0";
+        }
+        if(m_re == 0){
             res = to_string(m_im) + "i";
         }
-        if (m_im = 0){
-            res = to_string(m_re)
+        if (m_im == 0){
+            res = to_string(m_re);
         }
         if(m_im > 0){
-            res = to_string(m_re) + "+" to_string(m_im) + "i"
+            res = to_string(m_re) + "+" to_string(m_im) + "i";
         }
         if(m_im < 0){
-            res = to_string(m_re) + "-" to_string(m_im) + "i"
+            res = to_string(m_re) + "-" to_string(m_im) + "i";
         }
         return res;
     }
