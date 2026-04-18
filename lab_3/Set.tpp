@@ -1,19 +1,19 @@
 #include "Set.hpp"
 
 template<typename T, template<typename> class Container>
-Set<T, Container>::Set(): m_data(new Container<T>())(){}
+Set<T, Container>::Set(): m_data(new Container<T>()){}
 
 template<typename T, template<typename> class Container>
 Set<T, Container>::Set(Container<T>& other): Set(){
-    for(size_t i = 0; i < other.GetLength(); i++){
-        m_data->Append(other.Get(i));
+    for(const auto& i : other){
+        m_data->Append(i);
     }
 }
 
 template<typename T, template<typename> class Container>
 Set<T, Container>::Set(Set<T, Container>& other):Set(){
-    for(size_t i = 0; i < other.GetSize(); i++){
-        m_data->Append(other.GetData(i));
+    for(const auto& i : other){
+        m_data->Append(i);
     }
 }
 
@@ -97,7 +97,7 @@ Set<T, Container> Set<T, Container>::Where(bool (*predicate)(const T&)){
     Set<T, Container> result;
     for(size_t i = 0; i < GetSize(); i++){
         if(predicate(GetData(i))){
-            result.Add(i)
+            result.Add(GetData(i))
         }
     }
     return result;
@@ -107,8 +107,8 @@ template<typename T, template<typename> class Container>
 Set<T, Container> Set<T, Container>::Unification(const Set<T, Container>& other) const{
     Set<T, Container> new_set (*this);
 
-    for(size_t i = 0; i < other.GetSize(); i++){
-        new_set.Add(other.GetData(i));
+    for(const auto& i : other){
+        new_set.Add(i);
     }
     return new_set;
 }
@@ -155,8 +155,8 @@ Set<T, Container> Set<T, Container>::Subtraction(const Set<T, Container>& other)
 template<typename T, template<typename> class Container>
 bool Set<T, Container>::CheckSubset(const Set<T, Container>& other) const{
     size_t count = 0;
-    for(size_t i = 0; i < other.GetSize(); i++){
-        if(!Contains(other.GetData(i))){
+    for(const auto& i : other){
+        if(!Contains(i)){
             return false;
         }
     }
@@ -165,9 +165,28 @@ bool Set<T, Container>::CheckSubset(const Set<T, Container>& other) const{
 
 template<typename T, template<typename> class Container>
 bool Set<T, Container>::Сomparison(const Set<T, Container>& other) const{
-    if(GetSize() == other.GetSize() &? CheckSubset(other)){
+    if(GetSize() == other.GetSize() && CheckSubset(other)){
         return true;
     }
     return false;
 }
 
+template<typename T, template<typename> class Container>
+auto Set<T, Container>::begin(){
+    return m_data->begin();
+}
+
+template<typename T, template<typename> class Container>
+auto Set<T, Container>::end(){
+    return m_data->end();
+}
+
+template<typename T, template<typename> class Container>
+auto Set<T, Container>::cbegin() const{
+    return m_data->cbegin();
+}
+
+template<typename T, template<typename> class Container>
+auto Set<T, Container>::cend() const{
+    return m_data->cend();
+}

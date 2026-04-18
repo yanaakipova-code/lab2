@@ -20,7 +20,7 @@ public:
 
     void Enqueue(const T value);
     void Dequeue();
-    bool IsEmpty();
+    bool IsEmpty() const;
 
     int GetSize() const;
     T GetData(const int index) const;
@@ -38,6 +38,11 @@ public:
     Quate<T, Container> Extraction(int begin, int end) const;
     bool Check(Quate<T, Container>& other) const;
     SplitInfo<T, Container> Split(bool (*func)(const T&)) const;
+
+    auto begin();
+    auto end();
+    auto cbegin() const;
+    auto cend() const;
 };
 
 #include "Quete.tpp"

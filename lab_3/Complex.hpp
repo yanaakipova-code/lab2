@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <cmath>
 
@@ -48,12 +49,25 @@ public:
 
         return Complex(re, im);
     }
+    Complex& operator=(int value) {
+        m_re = value;
+        m_im = 0;
+        return *this;
+    }
+    bool operator>(const Complex& other) const {
+    return Abs() > other.Abs();
+    }
+
     bool operator==(const Complex& other) const {
         return m_re == other.m_re && m_im == other.m_im;
     }
     
     bool operator!=(const Complex& other) const {
         return !(*this == other);
+    }
+
+    friend U abs(const Complex& z) {
+    return z.Abs();
     }
 
     string ToString() const{

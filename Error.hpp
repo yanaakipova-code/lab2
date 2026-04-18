@@ -54,3 +54,13 @@ class MatrixSquereSizeException: public Exception{
 public:
     MatrixSquereSizeException(const char* message): Exception(message){}
 };
+
+class  QueueIsEmptyException: public Exception{
+public:
+    QueueIsEmptyException(const char* message): Exception(message){}
+};
+
+class  NotSetElemException: public Exception{
+public:
+    NotSetElemException(const char* message): Exception(message){}
+};

@@ -29,6 +29,12 @@ public:
 
     bool CheckSubset(const Set<T, Container>& other) const;
     bool Сomparison(const Set<T, Container>& other) const;
+
+    auto begin();
+    auto end();
+    auto cbegin() const;
+    auto cend() const;
+
 };
 
 #include "Set.tpp"

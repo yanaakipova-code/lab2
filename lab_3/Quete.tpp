@@ -2,19 +2,19 @@
 #include "../Error.hpp"
 
 template<typename T, template<typename> class Container>
-Quate<T, Container>::Quate(): m_data = new Container<T>(){}
+Quate<T, Container>::Quate(): m_data(new Container<T>()) {}
 
 template<typename T, template<typename> class Container>
 Quate<T, Container>::Quate(const Quate<T, Container>& other): Quate(){
-    for(size_t i = 0; i < othar.GetLength(); i++){
-        m_data.Append(other.m_data->Get(i));
+    for(const auto& i : other){
+        m_data->Append(i);
     }
 }
 
 template<typename T, template<typename> class Container>
 Quate<T, Container>::Quate(const Container<T>& other): Quate(){
-    for(size_t i = 0; i < other.GetLength(); i++){
-        m_data->Append(other.Get(i));
+    for(const auto& i : other){
+        m_data->Append(i);
     }
 }
 
@@ -34,17 +34,17 @@ void Quate<T, Container>::Dequeue(){
         throw QueueIsEmptyException("Очередь пустая");
     }
 
-    Container<T>() new_data;
+    Container<T>* new_data = new Container<T>();
     for (size_t i = 1; i < m_data->GetLength(); i++){
-        new_data.Append(m_data->Get(i));
+        new_data->Append(m_data->Get(i));
     }
 
-    m_data delete;
+    delete m_data ;
     m_data = new_data;
 }
 
 template<typename T, template<typename> class Container>
-bool Quate<T, Container>::IsEmpty(){
+bool Quate<T, Container>::IsEmpty() const{
     if(m_data->GetLength() == 0){
         return true;
     }
@@ -53,7 +53,7 @@ bool Quate<T, Container>::IsEmpty(){
 
 template<typename T, template<typename> class Container>
 T Quate<T, Container>::Peek() const{
-    if(m_data->GetLength()){
+    if(m_data->GetLength() == 0){
         throw QueueIsEmptyException("Очередь пустая");
     }
 
@@ -62,12 +62,12 @@ T Quate<T, Container>::Peek() const{
 
 template<typename T, template<typename> class Container>
 int Quate<T, Container>::GetSize() const{
-    return m_data->GetLeght();
+    return m_data->GetLength();
 }
 
 template<typename T, template<typename> class Container>
 T Quate<T, Container>::GetData(const int index) const{
-    return m_data.Get(index);
+    return m_data->Get(index);
 }
 
 template<typename T, template<typename> class Container>
@@ -77,9 +77,9 @@ Quate<U, Container> Quate<T, Container>::Map(U (*func)(const T&)) const{
 
     for (size_t i = 0; i < m_data->GetLeght(); i++){
         T new_elem = func(m_data->Get(i));
-        new_elem.Enqueue(new_elem);
+        new_quate.Enqueue(new_elem);
     }
-    return new_elem;
+    return new_quate;
 }
 
 template<typename T, template<typename> class Container>
@@ -115,8 +115,8 @@ Quate<T, Container> Quate<T,Container>::Concat(Quate<T, Container>& other) const
 
 template<typename T, template<typename> class Container>
 void Quate<T, Container>::Clutch(Quate<T, Container>& other){
-    for(size_t i = 0; i < other.GetSize(); i++){
-        *this->Enqueue(other.GetData(i));
+    for(const auto& i : other){
+        *this->Enqueue(i);
     }
 }
 
@@ -166,3 +166,23 @@ SplitInfo<T, Container> Quate<T, Container>::Split(bool (*func)(const T&)) const
     }
     return result;
 } 
+
+template<typename T, template<typename> class Container>
+auto Quate<T, Container>::begin(){
+    return m_data->begin();
+}
+
+template<typename T, template<typename> class Container>
+auto Quate<T, Container>::end(){
+    return m_data->end();
+}
+
+template<typename T, template<typename> class Container>
+auto Quate<T, Container>::cbegin() const{
+    return m_data->cbegin();
+}
+
+template<typename T, template<typename> class Container>
+auto Quate<T, Container>::cend() const{
+    return m_data->cend();
+}

@@ -41,7 +41,7 @@ public:
 
     string ToString() const{
         string res = "Id(number): " + to_string(m_id.number) + "Id(series): " + to_string(m_id.series) +
-                ",full name: " + GetFullName() + ",date:" + to_string(m_date);
+                ",full name: " + GetFullName() + ", date:" + to_string(m_date);
         return res;
     }
 

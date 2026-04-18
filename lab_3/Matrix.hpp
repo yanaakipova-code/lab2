@@ -1,4 +1,7 @@
+#pragma once
 #include <stdexcept>
+#include <initializer_list>
+
 template <typename T, template<typename> class Container>
 class SquareMatrix{
 private:
@@ -7,13 +10,13 @@ private:
 public:
     SquareMatrix();
     SquareMatrix(size_t size);
-    SquareMatrix(std::initializer_list list);
+    SquareMatrix(std::initializer_list<std::initializer_list<T>> list);
 
     ~SquareMatrix();
 
     T Get(size_t row, size_t col) const;
     size_t GetSize() const;
-    void Set(size_t row, size_ col, T value);
+    void Set(size_t row, size_t col, T value);
     SquareMatrix<T, Container> Sum(const SquareMatrix<T, Container>& other) const;
     SquareMatrix<T, Container> Multiply(T value) const;
 
@@ -24,9 +27,16 @@ public:
     SquareMatrix<T, Container> SumCol(size_t col_n1, size_t col_n2, T value) const;
     
     SquareMatrix<T, Container> SwapRow(size_t row_n1, size_t row_n2) const;
-    SquareMatrix<T, Container> SwapCal(size_t col_n1, size_t col_n2) const;
+    SquareMatrix<T, Container> SwapCol(size_t col_n1, size_t col_n2) const;
+
+    bool operator==(const SquareMatrix<T, Container>& other) const;
 
     T MatrixNorm() const;
+
+    auto begin();
+    auto end();
+    auto cbegin() const;
+    auto cend() const;
 };
 
 #include "Matrix.tpp"

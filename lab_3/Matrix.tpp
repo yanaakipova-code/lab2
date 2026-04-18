@@ -1,6 +1,6 @@
 #include "Matrix.hpp"
 #include <stdexcept>
-#include "../Error.h"
+#include "../Error.hpp"
 
 using namespace std;
 
@@ -25,7 +25,6 @@ template<typename T, template<typename> class Container>
 SquareMatrix<T,Container>::SquareMatrix(initializer_list<initializer_list<T>> matrix): SquareMatrix(){
     size_t size = matrix.size();
 
-    m_data = new Container<Container<T>>();
     for (auto& row_matrix: matrix){
         if(row_matrix.size() != size){
             throw MatrixSquereException("Maтрица может быть только квадратной");
@@ -71,7 +70,7 @@ void SquareMatrix<T, Container>::Set(size_t row, size_t col, T value) {
 }
 
 template<typename T, template<typename> class Container>
-SquareMatrix<T, Container> SquereMatrix<T, Container>::Sum(const SquereMatrix<T, Container>& other) const{
+SquareMatrix<T, Container> SquareMatrix<T, Container>::Sum(const SquareMatrix<T, Container>& other) const{
     if(m_size != other.m_size){
         throw MatrixSquereSizeException("Размеры должны совпадать");
     }
@@ -100,7 +99,7 @@ SquareMatrix<T, Container> SquareMatrix<T, Container>::Multiply(T value) const {
 }
 
 template<typename T, template<typename> class Container>
-SquareMatrix<T, Container> SquereMatrix<T, Container>::MultiplyRow(size_t row_number,T value) const{
+SquareMatrix<T, Container> SquareMatrix<T, Container>::MultiplyRow(size_t row_number,T value) const{
     if(row_number >= m_size){
         throw OutOfRangeException("Индекс не может быть больше размера матрицы");
     }
@@ -175,7 +174,7 @@ SquareMatrix<T, Container> SquareMatrix<T, Container>::SwapRow(size_t row_n1, si
 }   
 
 template<typename T, template<typename> class Container>
-SquareMatrix<T, Container> SquareMatrix<T, Container>::SwapCal(size_t col_n1, size_t col_n2) const{
+SquareMatrix<T, Container> SquareMatrix<T, Container>::SwapCol(size_t col_n1, size_t col_n2) const{
     if(col_n1 >= m_size || col_n2 >= m_size){
         throw OutOfRangeException("Таких столбцов нет");
     }
@@ -194,7 +193,7 @@ template<typename T, template<typename> class Container>
 T SquareMatrix<T, Container>:: MatrixNorm() const{
     T max_value = 0;
     for ( size_t i = 0; i < m_size; i++){
-        for(size_t j = 0; j < m_size; i++){
+        for(size_t j = 0; j < m_size; j++){
             T value = abs(Get(i,j));
             if(value > max_value){
                 max_value = value;
@@ -202,4 +201,40 @@ T SquareMatrix<T, Container>:: MatrixNorm() const{
         }
     }
     return max_value;
+}
+
+template<typename T, template<typename> class Container>
+bool SquareMatrix<T, Container>::operator==(const SquareMatrix<T, Container>& other) const{
+    if (other.GetSize() == GetSize()){
+        return false;
+    }
+
+    for(size_t i = 0; i < GetSize(); i++){
+        for(size_t j = 0; j < other.GetSize(); j++){
+            if (Get(i,j) != other.Get(i.j)){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+template<typename T, template<typename> class Container>
+auto SquareMatrix<T, Container>::begin(){
+    return m_data->begin();
+}
+
+template<typename T, template<typename> class Container>
+auto SquareMatrix<T, Container>::end(){
+    return m_data->end();
+}
+
+template<typename T, template<typename> class Container>
+auto SquareMatrix<T, Container>::cbegin() const{
+    return m_data->cbegin();
+}
+
+template<typename T, template<typename> class Container>
+auto SquareMatrix<T, Container>::cend() const{
+    return m_data->cend();
 }
