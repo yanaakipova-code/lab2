@@ -41,7 +41,7 @@ void Set<T, Container>::Add(const T& value){
 }
 
 template<typename T, template<typename> class Container>
-void Set<T, Container>::Remove(int index){
+void Set<T, Container>::RemoveByIndex(int index){
     if(index >= GetSize()){
         throw OutOfRangeException("Индекс за пределами множества");
     }
@@ -57,7 +57,7 @@ void Set<T, Container>::Remove(int index){
 }
 
 template<typename T, template<typename> class Container>
-void Set<T, Container>::Remove(const T& value){
+void Set<T, Container>::RemoveByValue(const T& value){
     int index = -1;
     for(size_t i = 0; i < GetSize(); i++){
         if(GetData(i) == value){

@@ -15,8 +15,8 @@ public:
     T GetData(unsigned int index) const;
 
     void Add(const T& value);
-    void Remove(int index);
-    void Remove(const T& vaiue);
+    void RemoveByIndex(int index);
+    void RemoveByValue(const T& vaiue);
     bool Contains(const T& value) const;
 
     template<typename U>
