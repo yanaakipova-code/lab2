@@ -204,11 +204,10 @@ TEST_CASE("SumCol - сложение столбцов") {
 
 TEST_CASE("SumCol - неверные индексы столбцов") {
     SquareMatrix<int, ArraySequence> mat(3);
-    
+
     REQUIRE_THROWS_AS(mat.SumCol(3, 0, 1), OutOfRangeException);
     REQUIRE_THROWS_AS(mat.SumCol(0, 3, 1), OutOfRangeException);
 }
-
 
 TEST_CASE("SwapRow - обмен строк") {
     SquareMatrix<int, ArraySequence> mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
