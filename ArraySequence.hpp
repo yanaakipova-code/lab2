@@ -26,8 +26,8 @@ public:
     size_t GetLength() const override;
     Sequence<T>* GetSubsequence(size_t start_index, size_t end_index) const override;
 
-    const T& GetRef(size_t index) const override;
-    T& GetRef(size_t index) override;
+    const T& GetRef(size_t index) const;
+    T& GetRef(size_t index);
 
     void Append(T temp) override;
     void Prepend(T temp) override;

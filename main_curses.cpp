@@ -55,8 +55,14 @@ string GetContentsString() {
     else {
         for (size_t i = 0; i < display_len; i++) {
             if (!first) result += ", ";
-            result += g_bit_seq->GetBit(i) ? "1" : "0";
-            first = false;
+        
+            if (g_bit_seq->GetBit(i)) {
+                result += "1";
+            } else {
+                result += "0";
+            }
+        
+        first = false;
         }
     }
     
@@ -203,7 +209,7 @@ void OnWhere() {
             delete g_bit_seq;
             g_bit_seq = dynamic_cast<BitSequence<uint32_t>*>(filtered);
         }
-    } catch (const exception& e) {
+    } catch (const Exception& e) {
         mvprintw(16, 0, "Error: %s", e.what());
         refresh();
         getch();
@@ -324,7 +330,7 @@ int main() {
             case 'r': case 'R': OnReduce(); break;
             case 'c': case 'C': OnClear(); break;
             default:
-                mvprintw(16, 0, "Unknown command. Press any key...");
+                mvprintw(16, 0, "Unknown command.");
                 refresh();
                 getch();
                 break;

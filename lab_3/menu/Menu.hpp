@@ -2,7 +2,7 @@
 #include <curses.h>
 #include <cstring>
 #include <string>
-#include "../../../Error.hpp"
+#include "../../Error.hpp"
 
 using namespace std;
 
@@ -17,7 +17,7 @@ void DrawBorder(){
     }
 }
 
-void  ClearMessageLine(){
+void ClearMessageLine(){
     mvprintw(LINES - 2, 2, "%-88s", "");
     refresh();
 }
@@ -44,7 +44,6 @@ int InputNumber(const string& prompt){
     curs_set(1);
 
     int number = 0;
-    int pos = 0;
 
     mvprintw(LINES - 5, 2, "%s: ", prompt.c_str());
     mvprintw(LINES - 4, 2, "-> ");
@@ -157,7 +156,7 @@ int RunMenu(const string& title, const char* items[], int itemCount) {
             }
         }
         
-        mvprintw(LINES - 3, 2, "↑/↓ - перемещение | Enter - выбор | Q - выход");
+        mvprintw(LINES - 3, 2, "⇵ - перемещение | Enter - выбор | Q - выход");
         refresh();
         ch = getch();
         
@@ -181,7 +180,6 @@ int RunMenu(const string& title, const char* items[], int itemCount) {
         }
     }
 }
-
 
 void ClearContentArea() {
     for (int i = 10; i < LINES - 5; i++) {
@@ -214,6 +212,32 @@ void DisplayMatrix(const string& name, size_t size, int (*getFunc)(size_t, size_
         mvprintw(5 + i, 4, "%d", getFunc(i, 0));
         for (size_t j = 1; j < size; j++) {
             mvprintw(5 + i, 4 + j * 8, "%d", getFunc(i, j));
+        }
+    }
+    
+    mvprintw(LINES - 3, 2, "Нажмите любую клавишу...");
+    refresh();
+    getch();
+}
+
+#include <functional>
+
+template<typename T>
+void DisplayMatrixGeneric(const string& name, size_t size, std::function<T(size_t, size_t)> getFunc) {
+    clear();
+    DrawBorder();
+    
+    mvprintw(2, 2, "=== %s ===", name.c_str());
+    mvprintw(3, 2, "Размер: %zux%zu", size, size);
+    
+    for (size_t i = 0; i < size; i++) {
+        for (size_t j = 0; j < size; j++) {
+            T val = getFunc(i, j);
+            if constexpr (is_same<T, int>::value) {
+                mvprintw(5 + i, 4 + j * 8, "%d", val);
+            } else if constexpr (is_same<T, double>::value) {
+                mvprintw(5 + i, 4 + j * 8, "%.2f", val);
+            }
         }
     }
     

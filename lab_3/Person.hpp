@@ -45,6 +45,32 @@ public:
         return res;
     }
 
+    bool operator==(const Person& other) const {
+    return m_id.number == other.m_id.number && 
+           m_id.series == other.m_id.series &&
+           m_name == other.m_name &&
+           m_surname == other.m_surname &&
+           m_patronymic == other.m_patronymic;
+}
+    Person& operator=(const Person& other) {
+        if (this != &other) {
+            m_id = other.m_id;
+            m_name = other.m_name;
+            m_surname = other.m_surname;
+            m_patronymic = other.m_patronymic;
+            m_date = other.m_date;
+        }
+        return *this;
+    }
+    int GetAge() const {
+        struct tm* birth = localtime(&m_date);
+        int current_year = 2025;
+    
+        int age = current_year - (birth->tm_year + 1900);
+    
+        return age;
+    }
+
 };
 
 

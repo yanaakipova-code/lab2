@@ -1,31 +1,22 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++20 -g -I"C:/PDCurses-3.9"
-CXXFLAGS += -DPDC_WIDE
-
-PD_DIR = libs/PDCurses
-PD_BUILD = $(PD_DIR)/wincon
-PD_LIB = $(PD_BUILD)/libpdcurses.a
-
-$(PD_LIB):
-	cd $(PD_BUILD) && $(MAKE) -f Makefile
-	cd $(PD_BUILD) && copy pdcurses.a libpdcurses.a
-
-CXXFLAGS += -I$(PD_DIR)
-LDFLAGS = -L$(PD_BUILD) -lpdcurses
-
+CXXFLAGS = -Wall -Wextra -std=c++20 -g -I"C:/PDCurses-3.9" -DPDC_WIDE -Ilibs/PDCurses
+LDFLAGS = -Llibs/PDCurses/wincon -lpdcurses
 TARGET = curses_program.exe
-SOURCES = main_curses.cpp BitSequence.cpp
-OBJECTS = main_curses.o BitSequence.o
+SOURCE = main_curses.cpp
 
-all: $(PD_LIB) $(TARGET)
+all: lib curses
 
-$(TARGET): $(OBJECTS) $(PD_LIB)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+lib:
+	cd libs/PDCurses/wincon && $(MAKE) -f Makefile
+	cd libs/PDCurses/wincon && copy pdcurses.a libpdcurses.a
 
-run: $(TARGET)
+curses:
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCE) $(LDFLAGS)
+
+run: curses
 	$(TARGET)
 
 clean:
-	del $(TARGET) $(OBJECTS) 2>nul
+	del $(TARGET) 2>nul
 
-.PHONY: all run clean
+.PHONY: all lib curses run clean

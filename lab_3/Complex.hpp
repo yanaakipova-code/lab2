@@ -2,6 +2,7 @@
 #include "../Error.hpp"
 #include <iostream>
 #include <cmath>
+#include <string> 
 
 using namespace std;
 
@@ -11,55 +12,63 @@ private:
     U m_re;
     U m_im;
 public:
-    Complex(U re, U im ): m_re(re), m_im(im){}
-    Complex(const Complex& other): m_re(other.m_re), m_im(other.m_im){}
+    Complex() : m_re(0), m_im(0) {}
+    
+    Complex(U re, U im) : m_re(re), m_im(im) {}
+    
+    Complex(const Complex& other) : m_re(other.m_re), m_im(other.m_im) {}
+    
+    ~Complex() {}
 
-    U GetRe() const{
-        return m_re;
-    }
-    U GetIm() const{
-        return m_im;
-    }
-    void SetRe(U re){
-        m_re = re;
-    }
-    void SetIm(U im){
-        m_im = im;
-    }
+    U GetRe() const { return m_re; }
+    U GetIm() const { return m_im; }
+    void SetRe(U re) { m_re = re; }
+    void SetIm(U im) { m_im = im; }
 
-    U Abs() const{
+    U Abs() const {
         return sqrt((m_re * m_re) + (m_im * m_im));
     }
 
-    Complex operator+(const Complex& other){
+    Complex operator+(const Complex& other) const {
         return Complex(m_re + other.m_re, m_im + other.m_im);
     }
-    Complex operator-(const Complex& other){
+    
+    Complex operator-(const Complex& other) const {
         return Complex(m_re - other.m_re, m_im - other.m_im);
     }
-    Complex operator*(const Complex& other){
+    
+    Complex operator*(const Complex& other) const {
         U re = (m_re * other.m_re) - (m_im * other.m_im);
         U im = (m_re * other.m_im) + (m_im * other.m_re); 
-
         return Complex(re, im);
     }
-    Complex operator/(const Complex& other){
+    
+    Complex operator/(const Complex& other) const {
         U del = (other.m_re * other.m_re) + (other.m_im * other.m_im); 
         if (del == 0){
             throw DivisionByZeroException("Деление на ноль");
         }
         U re = ((m_re * other.m_re) + (m_im * other.m_im)) / del;
         U im = ((m_im * other.m_re) - (m_re * other.m_im)) / del;
-
         return Complex(re, im);
     }
+    
+    Complex& operator=(const Complex& other) {
+        if (this != &other) {
+            m_re = other.m_re;
+            m_im = other.m_im;
+        }
+        return *this;
+    }
+    
     Complex& operator=(int value) {
         m_re = value;
         m_im = 0;
         return *this;
     }
+    
     bool operator>(const Complex& other) const {
-    return Abs() > other.Abs();
+        return Abs() > other.Abs();
     }
 
     bool operator==(const Complex& other) const {
@@ -74,22 +83,19 @@ public:
         return z.Abs();
     }
 
-    string ToString() const{
+    string ToString() const {
         if (m_re == 0 && m_im == 0) {
             return "0";
         }
-        if(m_re == 0){
+        if (m_re == 0){
             return to_string(m_im) + "i";
         }
         if (m_im == 0){
             return to_string(m_re);
         }
-        if(m_im > 0){
+        if (m_im > 0){
             return to_string(m_re) + "+" + to_string(m_im) + "i";
         }
-        if(m_im < 0){
-            return to_string(m_re) + to_string(m_im) + "i";
-        }
+        return to_string(m_re) + to_string(m_im) + "i";
     }
-
 };
